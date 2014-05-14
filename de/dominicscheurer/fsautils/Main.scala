@@ -74,6 +74,6 @@ object Main {
 	println((myNFA2*) accepts "aaabaaab")
 	
 	// RegExp
-	val myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE	
+	def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
   }
 }
