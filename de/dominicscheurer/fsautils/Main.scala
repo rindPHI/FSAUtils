@@ -53,6 +53,12 @@ object Main {
 	print("NFA accepts aaaba: ")
 	println(myNFA accepts "aaaba")
 	
+	// DFA Operations
+	print("!DFA accepts aaab: ")
+	println((!myDFA) accepts "aaab")
+	print("!DFA accepts aaaba: ")
+	println((!myDFA) accepts "aaaba")
+	
     // NFA Operations
 	def delta_NFAOp (state: State, letter: Letter) : NFADeltaResult =
 	  (state, letter) match {

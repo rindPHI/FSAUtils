@@ -1,6 +1,9 @@
 package de.dominicscheurer.fsautils
 
 import Types._
+import Conversions._
+
+import Predef.{any2stringadd => _, _}
 	
 class DFA(
     var alphabet: Set[Letter],
@@ -22,4 +25,5 @@ class DFA(
     case letter :: rest => accepts(rest, delta (fromState, letter))
   }
 
+  def unary_! : DFA = new DFA(alphabet, states, initialState, delta, states -- accepting)
 }
