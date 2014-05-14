@@ -2,7 +2,7 @@ package de.dominicscheurer.fsautils
 
 import Types._
 import Conversions._
-	
+
 class NFA(
     var alphabet: Set[Letter],
     var states: Set[State],

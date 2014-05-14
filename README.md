@@ -20,6 +20,7 @@ Features supported so far
 * Creation of Regular Expressions (RE)
 * Checking for acceptance of a word by an automaton
 * Star-Operation for NFA
+* Complement for DFA
 * Implicit conversion of DFA to NFA
 
 Planned Features
