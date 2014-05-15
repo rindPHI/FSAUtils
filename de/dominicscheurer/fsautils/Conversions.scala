@@ -3,7 +3,9 @@ package de.dominicscheurer.fsautils
 import Types._
 import RegularExpressions._
 
-object Conversions {  
+object Conversions {
+  implicit def bool2int(b:Boolean) = if (b) 1 else 0
+  
   implicit def DFAFromTuple(
       t: (Set[Letter],
           Set[State],

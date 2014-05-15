@@ -88,6 +88,12 @@ object Main {
 	print("NFA2* accepts aaabaaab: ")
 	println((myNFA2*) accepts "aaabaaab")
 	
+	println("\n\n(NFA toDFA): ")
+	println(myNFA toDFA)
+	
+	println("\n\n(NFA2 toDFA): ")
+	println(myNFA2 toDFA)
+	
 	// RegExp
 	def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
   }
