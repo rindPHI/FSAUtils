@@ -88,10 +88,16 @@ object Main {
 	print("NFA2* accepts aaabaaab: ")
 	println((myNFA2*) accepts "aaabaaab")
 	
-	println("\n\n(NFA toDFA): ")
+	println("\nNFA: ")
+	println(myNFA)
+	
+	println("\n(NFA toDFA): ")
 	println(myNFA toDFA)
 	
-	println("\n\n(NFA2 toDFA): ")
+	println("\nNFA2: ")
+	println(myNFA2)
+	
+	println("\n(NFA2 toDFA): ")
 	println(myNFA2 toDFA)
 	
 	// RegExp

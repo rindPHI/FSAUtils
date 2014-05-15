@@ -3,7 +3,7 @@ package de.dominicscheurer.fsautils
 import Types._
 import Conversions._
 import Helpers._
-import org.omg.CosNaming.NamingContextPackage.NotEmpty
+import FSAMethods._
 
 class NFA(
     var alphabet: Set[Letter],
@@ -64,6 +64,46 @@ class NFA(
       }
     
     (alphabet, pStates, pInitialState, pDelta _, pAccepting)
+  }
+  
+  override def toString = {
+    val indentSpace = "    "
+    val indentBeginner = "|"
+    val indent = "|" + indentSpace
+    val dindent = indent + indentSpace
+    var sb = new StringBuilder()
+    
+    sb ++= "NFA (Z,S,q0,D,A) with\n"
+    
+    sb ++= toStringUpToDelta(
+        indentBeginner,
+        indentSpace,
+        "Z", alphabet,
+        "S", states,
+        "q0", initialState,
+        "A", accepting);
+      
+    sb ++= indent ++= "D = {"
+    states.foreach(s =>
+      alphabet.filter(l => !delta(s,l).isEmpty).foreach(l =>
+        sb ++= "\n"
+           ++= dindent
+           ++= "("
+             ++= s.toString
+             ++= ","
+             ++= l.name
+             ++= ") => "
+             ++= (delta(s,l) match {
+             	   case None => "{}"
+             	   case Some(setOfStates) =>
+             	     setOfStates.foldLeft("")(
+             	         (result, aState) => result + aState.toString + " | ").stripSuffix(" | ")
+        	     })
+           ++= ","))
+    sb = sb.dropRight(1 - alphabet.isEmpty)
+    sb ++= "\n" ++= indent ++= "}\n"
+      
+    sb toString
   }
 	
 }

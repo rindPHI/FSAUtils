@@ -2,6 +2,7 @@ package de.dominicscheurer.fsautils
 
 import Types._
 import Conversions._
+import FSAMethods._
 
 import Predef.{any2stringadd => _, _}
 
@@ -29,28 +30,20 @@ class DFA(
   
   override def toString = {
     val indentSpace = "    "
+    val indentBeginner = "|"
     val indent = "|" + indentSpace
     val dindent = indent + indentSpace
     var sb = new StringBuilder()
     
     sb ++= "DFA (Z,S,q0,d,A) with\n"
-      
-    sb ++= indent ++= "Z = {"
-    alphabet.foreach(s => sb ++= s.name ++= ",")
-    sb = sb.dropRight(1 - alphabet.isEmpty)
-    sb ++= "}\n"
     
-    sb ++= indent ++= "S = {"
-    states.foreach(s => sb ++= s.toString() ++= ",")
-    sb = sb.dropRight(1 - states.isEmpty)
-    sb ++= "}\n"
-      
-    sb ++= indent ++= "q0 = " ++= initialState.toString ++= "\n"
-    
-    sb ++= indent ++= "A = {"
-    accepting.foreach(s => sb ++= s.toString() ++= ",")
-    sb = sb.dropRight(1 - accepting.isEmpty)
-    sb ++= "}\n"
+    sb ++= toStringUpToDelta(
+        indentBeginner,
+        indentSpace,
+        "Z", alphabet,
+        "S", states,
+        "q0", initialState,
+        "A", accepting);
       
     sb ++= indent ++= "d = {"
     states.foreach(s =>
