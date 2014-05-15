@@ -17,6 +17,7 @@ Features supported so far
 
 * Creation of Deterministic Finite Automata (DFA)
 * Creation of Nondeterministic Finite Automata (NFA)
+* Determinization of NFA
 * Creation of Regular Expressions (RE)
 * Checking for acceptance of a word by an automaton
 * Star-Operation for NFA
@@ -27,7 +28,6 @@ Planned Features
 ----------------
 
 * Concatenation, Star, Union, Intersection, Complement for DFA/NFA
-* Determinization of NFA
 * Minimization of DFA
 * Determination of the language (RE) of a DFA/NFA
 * Checking for equivalence of DFA/NFA/RE
@@ -80,6 +80,18 @@ println(myNFA accepts "aaab")
 
 ````
 println((myNFA*) accepts "aaabaaab")
+````
+
+#### Determinization for NFA
+
+````
+println((myNFA toDFA) accepts "aaab")
+````
+
+#### Complement for DFA
+
+````
+println((!myDFA) accepts "aaab")
 ````
 
 #### Creation of RE
