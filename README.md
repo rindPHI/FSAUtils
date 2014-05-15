@@ -95,6 +95,28 @@ println((myNFA toDFA) accepts "aaab")
 println((!myDFA) accepts "aaab")
 ````
 
+#### Pretty Printing
+
+`println(myNFA2 toDFA)` yields:
+
+```` 
+DFA (Z,S,q0,d,A) with
+|    Z = {a,b}
+|    S = {{},{0},{1},{0,1}}
+|    q0 = {0}
+|    A = {{1},{0,1}}
+|    d = {
+|        ({},a) => {},
+|        ({},b) => {},
+|        ({0},a) => {0},
+|        ({0},b) => {1},
+|        ({1},a) => {},
+|        ({1},b) => {},
+|        ({0,1},a) => {0},
+|        ({0,1},b) => {1}
+|    }
+````
+
 #### Creation of RE
 
 ````
