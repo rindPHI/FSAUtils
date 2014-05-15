@@ -73,6 +73,16 @@ object Main {
 	print("NFA2 accepts aaabaaab: ")
 	println(myNFA2 accepts "aaabaaab")
 	
+	print("(NFA2 toDFA) accepts aaab: ")
+	println((myNFA2 toDFA) accepts "aaab")
+	print("(NFA2 toDFA) accepts aaabaaab: ")
+	println((myNFA2 toDFA) accepts "aaabaaab")
+	
+	print("!(NFA2 toDFA) accepts aaab: ")
+	println(!(myNFA2 toDFA) accepts "aaab")
+	print("!(NFA2 toDFA) accepts aaabaaab: ")
+	println(!(myNFA2 toDFA) accepts "aaabaaab")
+	
 	print("NFA2* accepts aaab: ")
 	println((myNFA2*) accepts "aaab")
 	print("NFA2* accepts aaabaaab: ")

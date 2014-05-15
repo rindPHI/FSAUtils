@@ -7,7 +7,7 @@ object Types {
 	
 	abstract sealed class State
 	case class q(i: Int) extends State
-	case class set(s: Set[Int])
+	case class set(s: Set[State]) extends State
 	
 	type States = Set[State]
 }

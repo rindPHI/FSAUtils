@@ -2,6 +2,8 @@ package de.dominicscheurer.fsautils
 
 import Types._
 import Conversions._
+import Helpers._
+import org.omg.CosNaming.NamingContextPackage.NotEmpty
 
 class NFA(
     var alphabet: Set[Letter],
@@ -40,6 +42,28 @@ class NFA(
       }
     
     (alphabet, states, initialState, deltaStar _, accepting)
+  }
+  
+  def toDFA : DFA = {
+    val pStates = powerSet(states).map(setOfStates => set(setOfStates)) : States
+    val pInitialState = set(Set(initialState)) : State
+    val pAccepting = pStates.filter{
+      case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
+      case _ => error("Impossible case")
+    }
+    
+    def pDelta (state: State, letter: Letter) =
+	  (state, letter) match {
+      	case (set(setOfStates), letter) =>
+      	  set(setOfStates.foldLeft(Set(): States)((result, q) =>
+      	    delta(q, letter) match {
+      	      case None => result
+      	      case Some(setOfTargetStates) => result union setOfTargetStates
+      	    }))
+        case _ => error("Impossible case")
+      }
+    
+    (alphabet, pStates, pInitialState, pDelta _, pAccepting)
   }
 	
 }
