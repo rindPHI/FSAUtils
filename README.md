@@ -23,6 +23,7 @@ Features supported so far
 * Star-Operation for NFA
 * Complement for DFA
 * Implicit conversion of DFA to NFA
+* Pretty-printing toString methods for DFA/NFA
 
 Planned Features
 ----------------
