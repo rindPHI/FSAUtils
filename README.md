@@ -97,7 +97,7 @@ println((!myDFA) accepts "aaab")
 
 #### Pretty Printing
 
-`println(myNFA2 toDFA)` yields:
+`println(myNFA toDFA)` yields:
 
 ```` 
 DFA (Z,S,q0,d,A) with
@@ -108,12 +108,12 @@ DFA (Z,S,q0,d,A) with
 |    d = {
 |        ({},a) => {},
 |        ({},b) => {},
-|        ({0},a) => {0},
-|        ({0},b) => {1},
+|        ({0},a) => {0,1},
+|        ({0},b) => {0},
 |        ({1},a) => {},
 |        ({1},b) => {},
-|        ({0,1},a) => {0},
-|        ({0,1},b) => {1}
+|        ({0,1},a) => {0,1},
+|        ({0,1},b) => {0}
 |    }
 ````
 
