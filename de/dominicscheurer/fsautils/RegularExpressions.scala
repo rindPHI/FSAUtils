@@ -14,8 +14,4 @@ object RegularExpressions {
   case class Star(re: RE) extends RE
   case class Or(lhs: RE, rhs: RE) extends RE
   case class Concat(lhs: RE, rhs: RE) extends RE
-  
-//  def *(re: RE): RE = Star(re)
-//  def +(lhs: RE, rhs: RE): RE = Or(lhs, rhs)
-//  def &(lhs: RE, rhs: RE): RE = Concat(lhs, rhs)
 }

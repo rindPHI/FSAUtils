@@ -4,7 +4,7 @@ import Types._
 import Conversions._
 
 import Predef.{any2stringadd => _, _}
-	
+
 class DFA(
     var alphabet: Set[Letter],
     var states: Set[State],

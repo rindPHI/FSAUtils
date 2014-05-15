@@ -31,7 +31,7 @@ class NFA(
   }
   
   def * : NFA = {
-    def deltaStar (state: State, letter: Letter) : Option[Set[Letter]] =
+    def deltaStar (state: State, letter: Letter) : Option[Set[State]] =
 	  delta (state, letter) match {
       	case None => None
       	case Some(setOfStates) =>

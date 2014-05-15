@@ -3,7 +3,7 @@ package de.dominicscheurer.fsautils
 import Types._
 import RegularExpressions._
 
-object Conversions {
+object Conversions {  
   implicit def DFAFromTuple(
       t: (Set[Letter],
           Set[State],
@@ -22,7 +22,7 @@ object Conversions {
     new NFA(t._1, t._2, t._3, t._4, t._5)
   }
   
-  implicit def DFAtoNFA(dfa: DFA) : NFA =
+  implicit def DFAtoNFA[T](dfa: DFA) : NFA =
     (dfa.alphabet, dfa.states, dfa.initialState,
         (state: State, letter: Letter) => Some(Set(dfa.delta(state, letter))),
         dfa.accepting)
@@ -34,15 +34,15 @@ object Conversions {
   
   // The following could be dangerous for short
   // regular expressions (conflicting implicits):
-  implicit def OptionSetFromLetters(
-      letter: Letter) : Option[Set[Letter]] =
-    Some(Set(letter))
+  implicit def OptionSetFromStates(
+      state: State) : Option[Set[State]] =
+    Some(Set(state))
   
-  implicit def OptionSetFromLetters(
-      letters: (Letter, Letter)) =
-    Some(Set(letters._1, letters._2))
+  implicit def OptionSetFromStates(
+      states: (State, State)) =
+    Some(Set(states._1, states._2))
 
-  implicit def OptionSetFromLetters(
-      letters: (Letter, Letter, Letter)) =
-    Some(Set(letters._1, letters._2, letters._3))
+  implicit def OptionSetFromStates(
+      states: (State, State, State)) =
+    Some(Set(states._1, states._2, states._3))
 }
