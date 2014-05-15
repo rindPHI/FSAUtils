@@ -39,16 +39,16 @@ Examples
 
 ````
 def alphabet = Set('a, 'b)
-def states = Set('q0, 'q1)
-def q0 = 'q0
+def states = Set(q(0), q(1))             : States
+def q0 = q(0)                            : State
 def delta (state: State, letter: Letter) =
   (state, letter) match {
-	  case ('q0, 'a) => 'q0
-	  case ('q0, 'b) => 'q1
-	  case ('q1, 'a) => 'q0
-	  case ('q1, 'b) => 'q1
+	  case (q(0), 'a) => q(0)
+	  case (q(0), 'b) => q(1)
+	  case (q(1), 'a) => q(0)
+	  case (q(1), 'b) => q(1)
 	}
-def A = Set('q0)
+def A = Set(q(0))                        : States
 
 val myDFA = (alphabet, states, q0, delta _, A) : DFA
 
@@ -60,15 +60,15 @@ println(myDFA accepts "aaab")
 
 ````
 def alphabet = Set('a, 'b)
-def states = Set('q0, 'q1)
-def q0 = 'q0
+def states = Set(q(0), q(1))             : States
+def q0 = q(0)                            : State
 def delta (state: State, letter: Letter) : NFADeltaResult =
   (state, letter) match {
-	  case ('q0, 'a) => ('q0, 'q1)
-	  case ('q0, 'b) => 'q1
+	  case (q(0), 'a) => (q(0), q(1))
+	  case (q(0), 'b) => q(0)
 	  case _         => None
 	}
-def A = Set('q1)
+def A = Set(q(1))                        : States
 
 val myNFA = (alphabet, states, q0, delta _, A) : NFA
 
