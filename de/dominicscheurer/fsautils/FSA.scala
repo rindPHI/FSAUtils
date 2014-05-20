@@ -3,17 +3,17 @@ package de.dominicscheurer.fsautils {
 	import Conversions._
 	
 	object FSAMethods {
-		def toStringUpToDelta(
+		def toStringUpToDelta[T <: State](
 		    indentBeginner: String,
 		    indentSpace: String,
 		    alphabetDesignator: String,
 		    alphabet: Set[Letter],
 		    statesDesignator: String,
-		    states: Set[State],
+		    states: Set[T],
 		    initialStateDesignator: String,
-		    initialState: State,
+		    initialState: T,
 		    acceptingDesignator: String,
-		    accepting: Set[State]) : String = {
+		    accepting: Set[T]) : String = {
 		  
 			val indent = indentBeginner + indentSpace
 		    val dindent = indent + indentSpace

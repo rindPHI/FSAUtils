@@ -7,16 +7,16 @@ package de.dominicscheurer.fsautils {
 	
 	import Predef.{any2stringadd => _, _}
 
-	object FSA_DSL_Test extends FSA_DSL {
+	object FSA_DSL_Test extends FSA_DSL[q] {
 		import DFABuilder._
 		
 		def main(args: Array[String]) {
 		    val myDFA =
-			    dfa ('Z, 'S, 'q0, 'd, 'A) where
-				    'Z  ==> Set('a, 'b)   and
-				    'S  ==> Set(0, 1)     and
-				    'q0 ==> 0             and
-				    'A  ==> Set(0)        and
+			    dfa ('Z, 'S, 'q0, 'd, 'A)   where
+				    'Z  ==> Set('a, 'b)     and
+				    'S  ==> Set(q(0), q(1)) and
+				    'q0 ==> q(0)            and
+				    'A  ==> Set(q(0))       and
 				    'd  ==> ((s: State, l: Letter) =>
 					  (s, l) match {
 						  case (q(0), 'a) => q(0)
@@ -25,7 +25,7 @@ package de.dominicscheurer.fsautils {
 						  case (q(1), 'b) => q(1)
 					  })|
 			
-			println(myDFA.accepts("b"))
+			println(myDFA.accepts("aaaa"))
 		}
 	}
 }

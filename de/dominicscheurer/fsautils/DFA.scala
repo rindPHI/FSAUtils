@@ -5,12 +5,12 @@ package de.dominicscheurer.fsautils {
 	
 	import Predef.{any2stringadd => _, _}
   
-	class DFA(
+	class DFA[T <: State](
 	    var alphabet: Set[Letter],
-	    var states: Set[State],
-	    var initialState: State,
-	    var delta: ((State, Letter) => State),
-	    var accepting: Set[State]) {
+	    var states: Set[T],
+	    var initialState: T,
+	    var delta: ((T, Letter) => T),
+	    var accepting: Set[T]) {
 	  
 	  require(states contains initialState)
 	  require(accepting subsetOf states)
@@ -20,12 +20,12 @@ package de.dominicscheurer.fsautils {
 	  
 	  def accepts(word: Word): Boolean = accepts(word, initialState)
 	  
-	  def accepts(word: Word, fromState: State): Boolean = word match {
+	  def accepts(word: Word, fromState: T): Boolean = word match {
 	    case Nil => accepting contains fromState
 	    case letter :: rest => accepts(rest, delta (fromState, letter))
 	  }
 	
-	  def unary_! : DFA = new DFA(alphabet, states, initialState, delta, states -- accepting)
+	  def unary_! : DFA[T] = new DFA(alphabet, states, initialState, delta, states -- accepting)
 	  
 	  override def toString = {
 	    val indentSpace = "    "
