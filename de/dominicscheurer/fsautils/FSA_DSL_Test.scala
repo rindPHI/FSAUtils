@@ -11,7 +11,7 @@ package de.dominicscheurer.fsautils {
 		import DFABuilder._
 		
 		def main(args: Array[String]) {
-		    def myDFA =
+		    val myDFA =
 			    dfa ('Z, 'S, 'q0, 'd, 'A) where
 				    'Z  ==> Set('a, 'b)   and
 				    'S  ==> Set(0, 1)     and

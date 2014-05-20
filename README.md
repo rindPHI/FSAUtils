@@ -39,23 +39,26 @@ Examples
 #### Creation of a DFA
 
 ````
-def alphabet = Set('a, 'b)
-def states = Set(q(0), q(1))             : States
-def q0 = q(0)                            : State
-def delta (state: State, letter: Letter) =
-  (state, letter) match {
-	  case (q(0), 'a) => q(0)
-	  case (q(0), 'b) => q(1)
-	  case (q(1), 'a) => q(0)
-	  case (q(1), 'b) => q(1)
-	}
-def A = Set(q(0))                        : States
-
-val myDFA = (alphabet, states, q0, delta _, A) : DFA
+val myDFA =
+    dfa ('Z, 'S, 'q0, 'd, 'A) where
+	    'Z  ==> Set('a, 'b)   and
+	    'S  ==> Set(0, 1)     and
+	    'q0 ==> 0             and
+	    'A  ==> Set(0)        and
+	    'd  ==> ((s: State, l: Letter) =>
+		  (s, l) match {
+			  case (q(0), 'a) => q(0)
+			  case (q(0), 'b) => q(1)
+			  case (q(1), 'a) => q(0)
+			  case (q(1), 'b) => q(1)
+		  })|
 
 print("DFA accepts aaab: ")
 println(myDFA accepts "aaab")
 ````
+
+The above way to define a DFA has only recently been added and not yet been adopted to the NFA creation.
+Another (better) way of defining the transition function is on the TODO list.
 
 #### Creation of an NFA
 
