@@ -2,14 +2,15 @@ package de.dominicscheurer.fsautils {
     import Types._
     
 	class FSA_DSL {
-		case class DFABuilder(
-		      t: (Symbol, Symbol, Symbol, Symbol, Symbol)) {
+		case class FSABuilder(
+		      t: (Symbol, Symbol, Symbol, Symbol, Symbol), isDFA: Boolean) {
 		    // The elements that need to be filled
-		    var alphabet : Option[Set[Letter]]              = None
-			var states   : Option[States]                   = None
-			var q0       : Option[State]                    = None
-			var delta    : Option[(State, Letter) => State] = None
-			var A        : Option[States]                   = None
+		    var alphabet : Option[Set[Letter]]                           = None
+			var states   : Option[States]                                = None
+			var q0       : Option[State]                                 = None
+			var deltaF   : Option[(State, Letter) => State]              = None
+			var deltaR   : Option[(State, Letter) => Option[Set[State]]] = None
+			var A        : Option[States]                                = None
 		    
 			// Connectors for definition: "where" and "and"
 		    def where = (input: (Symbol, Any)) => (input._2 match {
@@ -34,7 +35,21 @@ package de.dominicscheurer.fsautils {
 		                                + "but is not defined for (" + i.toString + "," + l.toString + ")")
 		                    case _    => error("Should not occur")
 		                }
-		                delta = Some(myDelta)
+		                deltaF = Some(myDelta)
+		                this
+		            }
+		        }
+		        case func: DeltaRel => input._1 match {
+		            case t._4 => {
+		                def myDelta (s: State, l: Letter): Option[Set[State]] = s match {
+		                    case q(i) =>
+		                        if (func.fun contains(i, l))
+		                        	Some(func.fun(i, l).map(s => q(s)))
+		                        else
+		                            None
+		                    case _    => error("Should not occur")
+		                }
+		                deltaR = Some(myDelta)
 		                this
 		            }
 		        }
@@ -42,29 +57,43 @@ package de.dominicscheurer.fsautils {
 		    
 		    def and = where
 		    
-		    def testDone : Boolean =
+		    def testDFADone : Boolean =
 		        alphabet.isDefined &&
 		        states.isDefined   &&
 		        q0.isDefined       &&
-		        delta.isDefined    &&
+		        deltaF.isDefined   &&
+		        A.isDefined
+		    
+		    def testNFADone : Boolean =
+		        alphabet.isDefined &&
+		        states.isDefined   &&
+		        q0.isDefined       &&
+		        deltaR.isDefined   &&
 		        A.isDefined
 		    
 		    def | : DFA =
-		        if (testDone)
-		        	new DFA(alphabet.get, states.get, q0.get, delta.get, A.get)
+		        if (testDFADone)
+		        	new DFA(alphabet.get, states.get, q0.get, deltaF.get, A.get)
 		        else
 		            error("Some values of the DFA are still undefined")
-		    
-		    def done = |
+		            
+		    def || : NFA =
+		        if (testNFADone)
+		        	new NFA(alphabet.get, states.get, q0.get, deltaR.get, A.get)
+		        else
+		            error("Some values of the NFA are still undefined")
 		}
 		
-		// Starting point: dfa function
+		// Starting point: dfa/nfa function
 		def dfa(t: (Symbol, Symbol, Symbol, Symbol, Symbol)) =
-		    DFABuilder(t)
+		    FSABuilder(t, true)
+		def nfa(t: (Symbol, Symbol, Symbol, Symbol, Symbol)) =
+		    FSABuilder(t, false)
 		    
 		// Syntactic Sugar
 		object Delta {
-			def apply (t: ((Int, Symbol), Int)*) = Map() ++ t       
+			def apply (t: ((Int, Symbol), Int)*)      = DeltaFun(Map() ++ t)
+			def apply (t: ((Int, Symbol), Set[Int])*) = DeltaRel(Map() ++ t)
 		}
 		    
 		case class SymbolWrapper(s: Symbol) {
@@ -72,6 +101,7 @@ package de.dominicscheurer.fsautils {
 		    def ==>(vals: IntSet) = (s, vals)
 		    def ==>(aval: Int) = (s, aval)
 		    def ==>(afun: DeltaFun) = (s, afun)
+		    def ==>(afun: DeltaRel) = (s, afun)
 		}
 		    
 		implicit def SymbToSymbWrapper(s: Symbol) = SymbolWrapper(s)
@@ -80,9 +110,10 @@ package de.dominicscheurer.fsautils {
 		case class StringSet(set: Set[String])
 		case class SymbolSet(set: Set[Symbol])
 		case class DeltaFun(fun: Map[(Int, Letter), Int])
+		case class DeltaRel(fun: Map[(Int, Letter), Set[Int]])
 		implicit def is(set: Set[Int]) = IntSet(set)
 		implicit def sts(set: Set[String]) = StringSet(set)
 		implicit def sys(set: Set[Symbol]) = SymbolSet(set)
-		implicit def dfun(fun: Map[(Int, Letter), Int]) = DeltaFun(fun)
+//		implicit def dfun(fun: Map[(Int, Letter), Int]) = DeltaFun(fun)
 	}
 }

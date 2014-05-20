@@ -56,24 +56,19 @@ print("DFA accepts aaab: ")
 println(myDFA accepts "aaab")
 ````
 
-The above way to define a DFA has only recently been added and not yet been adopted to the NFA creation.
-Another (better) way of defining the transition function is on the TODO list.
-
 #### Creation of an NFA
 
 ````
-def alphabet = Set('a, 'b)
-def states = Set(q(0), q(1))             : States
-def q0 = q(0)                            : State
-def delta (state: State, letter: Letter) : NFADeltaResult =
-  (state, letter) match {
-	  case (q(0), 'a) => (q(0), q(1))
-	  case (q(0), 'b) => q(0)
-	  case _         => None
-	}
-def A = Set(q(1))                        : States
-
-val myNFA = (alphabet, states, q0, delta _, A) : NFA
+val myNFA =
+    nfa ('Z, 'S, 'q0, 'd, 'A) where
+        'Z  ==> Set('a, 'b)   and
+        'S  ==> Set(0, 1)     and
+        'q0 ==> 0             and
+        'A  ==> Set(1)        and
+        'd  ==> Delta(
+              (0, 'a) -> Set(0, 1),
+              (0, 'b) -> Set(0)
+        )||
 
 print("NFA accepts aaab: ")
 println(myNFA accepts "aaab")

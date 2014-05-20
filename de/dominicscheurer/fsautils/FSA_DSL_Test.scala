@@ -8,7 +8,7 @@ package de.dominicscheurer.fsautils {
 	import Predef.{any2stringadd => _, _}
 
 	object FSA_DSL_Test extends FSA_DSL {
-		import DFABuilder._
+		import FSABuilder._
 		
 		def main(args: Array[String]) {
 		    val myDFA =
@@ -25,6 +25,19 @@ package de.dominicscheurer.fsautils {
 					)|
 			
 			println(myDFA.accepts("baa"))
+			
+		    val myNFA =
+			    nfa ('Z, 'S, 'q0, 'd, 'A) where
+			        'Z  ==> Set('a, 'b)   and
+			        'S  ==> Set(0, 1)     and
+			        'q0 ==> 0             and
+			        'A  ==> Set(1)        and
+			        'd  ==> Delta(
+			              (0, 'a) -> Set(0, 1),
+			              (0, 'b) -> Set(0)
+			        )||
+			
+			println(myNFA.accepts("aaaaaa"))
 		}
 	}
 }
