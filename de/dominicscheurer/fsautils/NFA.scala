@@ -43,27 +43,27 @@ package de.dominicscheurer.fsautils {
 	    (alphabet, states, initialState, deltaStar _, accepting) : NFA[T]
 	  }
 	  
-//	  def toDFA : DFA[set] = {
-//	    val pStates = powerSet(states).map(setOfStates => set(setOfStates)) : States
-//	    val pInitialState = set(Set(initialState)) : State
-//	    val pAccepting = pStates.filter{
-//	      case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
-//	      case _ => error("Impossible case")
-//	    }
-//	    
-//	    def pDelta (state: State, letter: Letter) =
-//		  (state, letter) match {
-//	      	case (set(setOfStates), letter) =>
-//	      	  set(setOfStates.foldLeft(Set(): States)((result, q) =>
-//	      	    delta(q, letter) match {
-//	      	      case None => result
-//	      	      case Some(setOfTargetStates) => result union setOfTargetStates
-//	      	    }))
-//	        case _ => error("Impossible case")
-//	      }
-//	    
-//	    (alphabet, pStates, pInitialState, pDelta _, pAccepting)
-//	  }
+	  def toDFA : DFA[set[T]] = {
+	    val pStates = powerSet(states).map(setOfStates => set(setOfStates)) : Set[set[T]]
+	    val pInitialState = set(Set(initialState)) : set[T]
+	    val pAccepting = pStates.filter{
+	      case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
+	      case _ => error("Impossible case")
+	    } : Set[set[T]]
+	    
+	    def pDelta (state: set[T], letter: Letter) =
+		  (state, letter) match {
+	      	case (set(setOfStates), letter) =>
+	      	  set(setOfStates.foldLeft(Set(): Set[T])((result, q) =>
+	      	    delta(q, letter) match {
+	      	      case None => result
+	      	      case Some(setOfTargetStates) => result union setOfTargetStates
+	      	    }))
+	        case _ => error("Impossible case")
+	      }
+	    
+	    (alphabet, pStates, pInitialState, pDelta _, pAccepting)
+	  }
 	  
 	  override def toString = {
 	    val indentSpace = "    "

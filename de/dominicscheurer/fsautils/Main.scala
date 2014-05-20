@@ -31,11 +31,11 @@ package de.dominicscheurer.fsautils {
 		println(myDFA accepts "aaaba")
 	    
 		// Conversion
-//		val myDFAtoNFA = myDFA : NFA[q]
-//		print("DFA2NFA accepts aaab: ")
-//		println(myDFAtoNFA accepts "aaab")
-//		print("DFA2NFA accepts aaaba: ")
-//		println(myDFAtoNFA accepts "aaaba")
+		val myDFAtoNFA = myDFA : NFA[q]
+		print("DFA2NFA accepts aaab: ")
+		println(myDFAtoNFA accepts "aaab")
+		print("DFA2NFA accepts aaaba: ")
+		println(myDFAtoNFA accepts "aaaba")
 		
 	    // NFA
 		def deltaNFA (state: q, letter: Letter) : Option[Set[q]] =
@@ -74,32 +74,32 @@ package de.dominicscheurer.fsautils {
 		print("NFA2 accepts aaabaaab: ")
 		println(myNFA2 accepts "aaabaaab")
 		
-//		print("(NFA2 toDFA) accepts aaab: ")
-//		println((myNFA2 toDFA) accepts "aaab")
-//		print("(NFA2 toDFA) accepts aaabaaab: ")
-//		println((myNFA2 toDFA) accepts "aaabaaab")
-//		
-//		print("!(NFA2 toDFA) accepts aaab: ")
-//		println(!(myNFA2 toDFA) accepts "aaab")
-//		print("!(NFA2 toDFA) accepts aaabaaab: ")
-//		println(!(myNFA2 toDFA) accepts "aaabaaab")
-//		
-//		print("NFA2* accepts aaab: ")
-//		println((myNFA2*) accepts "aaab")
-//		print("NFA2* accepts aaabaaab: ")
-//		println((myNFA2*) accepts "aaabaaab")
-//		
-//		println("\nNFA: ")
-//		println(myNFA)
-//		
-//		println("\n(NFA toDFA): ")
-//		println(myNFA toDFA)
-//		
-//		println("\nNFA2: ")
-//		println(myNFA2)
-//		
-//		println("\n(NFA2 toDFA): ")
-//		println(myNFA2 toDFA)
+		print("(NFA2 toDFA) accepts aaab: ")
+		println((myNFA2 toDFA) accepts "aaab")
+		print("(NFA2 toDFA) accepts aaabaaab: ")
+		println((myNFA2 toDFA) accepts "aaabaaab")
+		
+		print("!(NFA2 toDFA) accepts aaab: ")
+		println(!(myNFA2 toDFA) accepts "aaab")
+		print("!(NFA2 toDFA) accepts aaabaaab: ")
+		println(!(myNFA2 toDFA) accepts "aaabaaab")
+		
+		print("NFA2* accepts aaab: ")
+		println((myNFA2*) accepts "aaab")
+		print("NFA2* accepts aaabaaab: ")
+		println((myNFA2*) accepts "aaabaaab")
+		
+		println("\nNFA: ")
+		println(myNFA)
+		
+		println("\n(NFA toDFA): ")
+		println(myNFA toDFA)
+		
+		println("\nNFA2: ")
+		println(myNFA2)
+		
+		println("\n(NFA2 toDFA): ")
+		println(myNFA2 toDFA)
 		
 		// RegExp
 		def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE

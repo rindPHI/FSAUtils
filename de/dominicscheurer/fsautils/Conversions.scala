@@ -23,10 +23,10 @@ package de.dominicscheurer.fsautils {
 	    new NFA(t._1, t._2, t._3, t._4, t._5)
 	  }
 	  
-//	  implicit def DFAtoNFA[T <: State](dfa: DFA[T]) : NFA =
-//	    (dfa.alphabet, dfa.states, dfa.initialState,
-//	        (state: T, letter: Letter) => Some(Set(dfa.delta(state, letter))),
-//	        dfa.accepting)
+	  implicit def DFAtoNFA[T <: State](dfa: DFA[T]) : NFA[T] =
+	    (dfa.alphabet, dfa.states, dfa.initialState,
+	        (state: T, letter: Letter) => Some(Set(dfa.delta(state, letter))),
+	        dfa.accepting)
 	  
 	  implicit def REFromLetter(
 	      letter: Letter) : RE = {

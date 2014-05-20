@@ -12,7 +12,7 @@ package de.dominicscheurer.fsautils {
 		  override def toString = i toString
 		}
 		
-		case class set(s: Set[State]) extends State {
+		case class set[T <: State](s: Set[T]) extends State {
 		  override def toString = {
 		    var sb = new StringBuilder
 		    
