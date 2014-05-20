@@ -17,20 +17,14 @@ package de.dominicscheurer.fsautils {
 				    'S  ==> Set(0, 1)     and
 				    'q0 ==> 0             and
 				    'A  ==> Set(0)        and
-				    'd  ==> ((s: Int, l: Letter) =>
-					  (s, l) match {
-						  case (0, 'a) => 0
-						  case (0, 'b) => 1
-						  case (1, 'a) => 0
-						  case (1, 'b) => 1
-					  })|
+				    'd  ==> Delta(
+						  (0, 'a) -> 0,
+						  (0, 'b) -> 1,
+						  (1, 'a) -> 0,
+						  (1, 'b) -> 1
+					)|
 			
-			println(myDFA.accepts("b"))
-				    
-			def test = Delta(
-		        (0, 'a) -> 0,
-		        (0, 'b) -> 1
-	        )
+			println(myDFA.accepts("baa"))
 		}
 	}
 }

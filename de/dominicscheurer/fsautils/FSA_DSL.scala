@@ -26,7 +26,12 @@ package de.dominicscheurer.fsautils {
 		        case func: DeltaFun => input._1 match {
 		            case t._4 => {
 		                def myDelta (s: State, l: Letter): State = s match {
-		                    case q(i) => q(func.fun(i, l))
+		                    case q(i) =>
+		                        if (func.fun contains(i, l))
+		                        	q(func.fun(i, l))
+		                        else
+		                            error("DFA transition function must be total, "
+		                                + "but is not defined for (" + i.toString + "," + l.toString + ")")
 		                    case _    => error("Should not occur")
 		                }
 		                delta = Some(myDelta)
@@ -74,10 +79,10 @@ package de.dominicscheurer.fsautils {
 		case class IntSet(set: Set[Int])
 		case class StringSet(set: Set[String])
 		case class SymbolSet(set: Set[Symbol])
-		case class DeltaFun(fun: ((Int, Letter) => Int))
+		case class DeltaFun(fun: Map[(Int, Letter), Int])
 		implicit def is(set: Set[Int]) = IntSet(set)
 		implicit def sts(set: Set[String]) = StringSet(set)
 		implicit def sys(set: Set[Symbol]) = SymbolSet(set)
-		implicit def dfun(fun: ((Int, Letter) => Int)) = DeltaFun(fun)
+		implicit def dfun(fun: Map[(Int, Letter), Int]) = DeltaFun(fun)
 	}
 }
