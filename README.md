@@ -45,13 +45,13 @@ val myDFA =
 	    'S  ==> Set(0, 1)     and
 	    'q0 ==> 0             and
 	    'A  ==> Set(0)        and
-	    'd  ==> ((s: State, l: Letter) =>
-		  (s, l) match {
-			  case (q(0), 'a) => q(0)
-			  case (q(0), 'b) => q(1)
-			  case (q(1), 'a) => q(0)
-			  case (q(1), 'b) => q(1)
-		  })|
+	    'd  ==> ((s: Int, l: Letter) =>
+          (s, l) match {
+              case (0, 'a) => 0
+              case (0, 'b) => 1
+              case (1, 'a) => 0
+              case (1, 'b) => 1
+          })|
 
 print("DFA accepts aaab: ")
 println(myDFA accepts "aaab")
