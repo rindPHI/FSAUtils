@@ -26,6 +26,11 @@ package de.dominicscheurer.fsautils {
 					  })|
 			
 			println(myDFA.accepts("b"))
+				    
+			def test = Delta(
+		        (0, 'a) -> 0,
+		        (0, 'b) -> 1
+	        )
 		}
 	}
 }

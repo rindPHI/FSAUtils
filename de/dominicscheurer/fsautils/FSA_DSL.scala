@@ -58,6 +58,10 @@ package de.dominicscheurer.fsautils {
 		    DFABuilder(t)
 		    
 		// Syntactic Sugar
+		object Delta {
+			def apply (t: ((Int, Symbol), Int)*) = Map() ++ t       
+		}
+		    
 		case class SymbolWrapper(s: Symbol) {
 		    def ==>(vals: SymbolSet) = (s, vals)
 		    def ==>(vals: IntSet) = (s, vals)
