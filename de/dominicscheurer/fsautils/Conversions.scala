@@ -14,14 +14,14 @@ package de.dominicscheurer.fsautils {
 	    new DFA[T](t._1, t._2, t._3, t._4, t._5)
 	  }
 	  
-//	  implicit def NFAFromTuple(
-//	      t: (Set[Letter],
-//	          Set[State],
-//	          State,
-//	          ((State, Letter) => Option[Set[State]]),
-//	          Set[State])) : NFA = {
-//	    new NFA(t._1, t._2, t._3, t._4, t._5)
-//	  }
+	  implicit def NFAFromTuple[T <: State](
+	      t: (Set[Letter],
+	          Set[T],
+	          T,
+	          ((T, Letter) => Option[Set[T]]),
+	          Set[T])) : NFA[T] = {
+	    new NFA(t._1, t._2, t._3, t._4, t._5)
+	  }
 	  
 //	  implicit def DFAtoNFA[T <: State](dfa: DFA[T]) : NFA =
 //	    (dfa.alphabet, dfa.states, dfa.initialState,
@@ -35,16 +35,16 @@ package de.dominicscheurer.fsautils {
 	  
 	  // The following could be dangerous for short
 	  // regular expressions (conflicting implicits):
-	  implicit def OptionSetFromStates(
-	      state: State) : Option[Set[State]] =
+	  implicit def OptionSetFromStates[T <: State](
+	      state: T) : Option[Set[T]] =
 	    Some(Set(state))
 	  
-	  implicit def OptionSetFromStates(
-	      states: (State, State)) =
+	  implicit def OptionSetFromStates[T <: State](
+	      states: (T, T)) =
 	    Some(Set(states._1, states._2))
 	
-	  implicit def OptionSetFromStates(
-	      states: (State, State, State)) =
+	  implicit def OptionSetFromStates[T <: State](
+	      states: (T, T, T)) =
 	    Some(Set(states._1, states._2, states._3))
 	}
 }
