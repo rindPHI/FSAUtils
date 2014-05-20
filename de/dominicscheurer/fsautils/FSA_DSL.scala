@@ -24,7 +24,14 @@ package de.dominicscheurer.fsautils {
 		            case t._3 => { q0 = Some(q(state)); this }
 		        }
 		        case func: DeltaFun => input._1 match {
-		            case t._4 => { delta = Some(func.fun); this }
+		            case t._4 => {
+		                def myDelta (s: State, l: Letter): State = s match {
+		                    case q(i) => q(func.fun(i, l))
+		                    case _    => error("Should not occur")
+		                }
+		                delta = Some(myDelta)
+		                this
+		            }
 		        }
 		    })
 		    
@@ -63,10 +70,10 @@ package de.dominicscheurer.fsautils {
 		case class IntSet(set: Set[Int])
 		case class StringSet(set: Set[String])
 		case class SymbolSet(set: Set[Symbol])
-		case class DeltaFun(fun: ((State, Letter) => State))
+		case class DeltaFun(fun: ((Int, Letter) => Int))
 		implicit def is(set: Set[Int]) = IntSet(set)
 		implicit def sts(set: Set[String]) = StringSet(set)
 		implicit def sys(set: Set[Symbol]) = SymbolSet(set)
-		implicit def dfun(fun: ((State, Letter) => State)) = DeltaFun(fun)
+		implicit def dfun(fun: ((Int, Letter) => Int)) = DeltaFun(fun)
 	}
 }
