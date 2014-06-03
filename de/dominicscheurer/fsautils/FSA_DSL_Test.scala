@@ -1,15 +1,5 @@
 package de.dominicscheurer.fsautils {
-	import de.dominicscheurer.fsautils._
-  
-	import Types._
-	import Conversions._
-	import RegularExpressions._
-	
-	import Predef.{any2stringadd => _, _}
-
 	object FSA_DSL_Test extends FSA_DSL {
-		import FSABuilder._
-		
 		def main(args: Array[String]) {
 		    val myDFA =
 			    dfa ('Z, 'S, 'q0, 'd, 'A) where
