@@ -36,6 +36,9 @@ Planned Features
 Examples
 --------
 
+Please consider the files Main.scala and FSA_DSL_Test.scala to see some
+working applied examples.
+
 #### Creation of a DFA
 
 ````
