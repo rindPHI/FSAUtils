@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Finite State Machine Utilities: Scala : Models of finite automata (DFA, NFA) with support of common operations and easily readable creation of concrete machines" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Finite State Machine Utilities: Scala</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/rindPHI/FSAUtils">View on GitHub</a>
+
+          <h1 id="project_title">Finite State Machine Utilities: Scala</h1>
+          <h2 id="project_tagline">Models of finite automata (DFA, NFA) with support of common operations and easily readable creation of concrete machines</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/rindPHI/FSAUtils/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/rindPHI/FSAUtils/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="fsautils" class="anchor" href="#fsautils"><span class="octicon octicon-link"></span></a>FSAUtils</h1>
+
+<p>Models of finite automata (DFA, NFA) with support of common operations and easily readable creation of objects.</p>
+
+<p>The main goals of this project are:</p>
+
+<ul>
+<li>Support of easily readable definitions of finite automata (FA) and regular expressions</li>
+<li>Support of important basic operations on FA</li>
+<li>Adherence to the following coding guidelines aiming to assure correctness:
+
+<ul>
+<li>Simple and easily understandable code</li>
+<li>Mostly adherence to the functional programming paradigm</li>
+<li>Functional parts of the code (the core) closely follows abstract mathematical definitions of the respective operations</li>
+</ul>
+</li>
+</ul><h2>
+<a name="features-supported-so-far" class="anchor" href="#features-supported-so-far"><span class="octicon octicon-link"></span></a>Features supported so far</h2>
+
+<ul>
+<li>Creation of Deterministic Finite Automata (DFA)</li>
+<li>Creation of Nondeterministic Finite Automata (NFA)</li>
+<li>Determinization of NFA</li>
+<li>Creation of Regular Expressions (RE)</li>
+<li>Checking for acceptance of a word by an automaton</li>
+<li>Star-Operation for NFA</li>
+<li>Complement for DFA</li>
+<li>Implicit conversion of DFA to NFA</li>
+<li>Pretty-printing toString methods for DFA/NFA</li>
+</ul><h2>
+<a name="planned-features" class="anchor" href="#planned-features"><span class="octicon octicon-link"></span></a>Planned Features</h2>
+
+<ul>
+<li>Concatenation, Star, Union, Intersection, Complement for DFA/NFA</li>
+<li>Minimization of DFA</li>
+<li>Determination of the language (RE) of a DFA/NFA</li>
+<li>Checking for equivalence of DFA/NFA/RE</li>
+</ul><h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h4>
+<a name="creation-of-a-dfa" class="anchor" href="#creation-of-a-dfa"><span class="octicon octicon-link"></span></a>Creation of a DFA</h4>
+
+<pre><code>val myDFA =
+    dfa ('Z, 'S, 'q0, 'd, 'A) where
+        'Z  ==&gt; Set('a, 'b)   and
+        'S  ==&gt; Set(0, 1)     and
+        'q0 ==&gt; 0             and
+        'A  ==&gt; Set(0)        and
+        'd  ==&gt; Delta(
+              (0, 'a) -&gt; 0,
+              (0, 'b) -&gt; 1,
+              (1, 'a) -&gt; 0,
+              (1, 'b) -&gt; 1
+        )|
+
+print("DFA accepts aaab: ")
+println(myDFA accepts "aaab")
+</code></pre>
+
+<h4>
+<a name="creation-of-an-nfa" class="anchor" href="#creation-of-an-nfa"><span class="octicon octicon-link"></span></a>Creation of an NFA</h4>
+
+<pre><code>val myNFA =
+    nfa ('Z, 'S, 'q0, 'd, 'A) where
+        'Z  ==&gt; Set('a, 'b)   and
+        'S  ==&gt; Set(0, 1)     and
+        'q0 ==&gt; 0             and
+        'A  ==&gt; Set(1)        and
+        'd  ==&gt; Delta(
+              (0, 'a) -&gt; Set(0, 1),
+              (0, 'b) -&gt; Set(0)
+        )||
+
+print("NFA accepts aaab: ")
+println(myNFA accepts "aaab")
+</code></pre>
+
+<h4>
+<a name="star-operation-for-nfa" class="anchor" href="#star-operation-for-nfa"><span class="octicon octicon-link"></span></a>Star Operation for NFA</h4>
+
+<pre><code>println((myNFA*) accepts "aaabaaab")
+</code></pre>
+
+<h4>
+<a name="determinization-for-nfa" class="anchor" href="#determinization-for-nfa"><span class="octicon octicon-link"></span></a>Determinization for NFA</h4>
+
+<pre><code>println((myNFA toDFA) accepts "aaab")
+</code></pre>
+
+<h4>
+<a name="complement-for-dfa" class="anchor" href="#complement-for-dfa"><span class="octicon octicon-link"></span></a>Complement for DFA</h4>
+
+<pre><code>println((!myDFA) accepts "aaab")
+</code></pre>
+
+<h4>
+<a name="pretty-printing" class="anchor" href="#pretty-printing"><span class="octicon octicon-link"></span></a>Pretty Printing</h4>
+
+<p><code>println(myNFA toDFA)</code> yields:</p>
+
+<pre><code>DFA (Z,S,q0,d,A) with
+|    Z = {a,b}
+|    S = {{},{0},{1},{0,1}}
+|    q0 = {0}
+|    A = {{1},{0,1}}
+|    d = {
+|        ({},a) =&gt; {},
+|        ({},b) =&gt; {},
+|        ({0},a) =&gt; {0,1},
+|        ({0},b) =&gt; {0},
+|        ({1},a) =&gt; {},
+|        ({1},b) =&gt; {},
+|        ({0,1},a) =&gt; {0,1},
+|        ({0,1},b) =&gt; {0}
+|    }
+</code></pre>
+
+<h4>
+<a name="creation-of-re" class="anchor" href="#creation-of-re"><span class="octicon octicon-link"></span></a>Creation of RE</h4>
+
+<pre><code>def myRegExp = (('a*) + ('b &amp; ('b*) &amp; 'a))* : RE
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Finite State Machine Utilities: Scala maintained by <a href="https://github.com/rindPHI">rindPHI</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
