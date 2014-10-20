@@ -13,16 +13,28 @@ package de.dominicscheurer.fsautils {
 	  
 	  require(states contains initialState)
 	  require(accepting subsetOf states)
-	  
-	  // TODO (for contatenization)
-//	  def getRenamedCopy: NFA = {
-//	    var renameMap : Map[State, State] = null
-//	    renameMap = states.foldLeft(renameMap.empty){ (z,s) =>
-//	      	z + (s -> s)
-//	      }
-//	    
-//	    (alphabet, statesRen, initialStateRen, deltaRen _, acceptingRen)
-//	  }
+
+	  def getRenamedCopy(startVal: Int): NFA = {
+	    val emptyMap : Map[State, State] = Map()
+	    val renameMap : Map[State, State] =
+	      states.foldLeft(emptyMap){ (z,s) =>
+	      	z + (s -> q(z.size + startVal))
+	      }
+	    val reverseRenameMap = renameMap.map(_.swap)
+	    
+	    def deltaRen (state: State, letter: Letter) : Option[Set[State]] =
+		  delta (reverseRenameMap(state), letter) match {
+	      	case None => None
+	      	case Some(setOfStates) =>
+	      	  Some(setOfStates.map(s => renameMap(s)))
+	      }
+	    
+	    (alphabet,
+	        states.map(s => renameMap(s)),
+	        renameMap(initialState),
+	        deltaRen _,
+	        accepting.map(s => renameMap(s)))
+	  }
 	  
 	  def accepts(word: String): Boolean =
 	    accepts(for (x <- word.toList) yield Symbol(x toString))
@@ -53,23 +65,25 @@ package de.dominicscheurer.fsautils {
 	    (alphabet, states, initialState, deltaStar _, accepting)
 	  }
 	  
-	  def ++(other: NFA): NFA = {
+	  def ++(otherOrig: NFA): NFA = {
 	    //TODO: Treat case that this automaton accepts the empty word
+	    val thisR = this getRenamedCopy 0
+	    val other = otherOrig getRenamedCopy states.size
 	    
-	    def statesCup = states ++ other.states // TODO: Ensure that states are disjunct
+	    def statesCup = thisR.states ++ other.states // TODO: Ensure that states are disjunct
 	    
 	    def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
 		  if (other.states contains state)
 		    other.delta (state, letter) // Delta_2
 		  else // Delta_1 \cup Delta_{1->2}
-		    delta (state, letter) match {
+		    thisR.delta (state, letter) match {
 		      	case None => None
 		      	case Some(setOfStates) =>
-		      	  Some(setOfStates ++ setOfStates.filter(accepting contains _)
+		      	  Some(setOfStates ++ setOfStates.filter(thisR.accepting contains _)
 		      	      .foldLeft(Set(other.initialState))((_,_) => Set(other.initialState)))
 		      }
 	    
-	    (alphabet, statesCup, initialState, deltaCup _, other.accepting)
+	    (alphabet, statesCup, thisR.initialState, deltaCup _, other.accepting)
 	  }
 	  
 	  def toDFA : DFA = {
