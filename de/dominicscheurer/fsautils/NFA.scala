@@ -59,7 +59,7 @@ package de.dominicscheurer.fsautils {
 	      	case None => None
 	      	case Some(setOfStates) =>
 	      	  Some(setOfStates ++ setOfStates.filter(accepting contains _)
-	      	      .foldLeft(Set(initialState))((_,_) => Set(initialState)))
+	      	      .foldLeft(Set(): Set[State])((_,_) => Set(initialState)))
 	      }
 	    
 	    (alphabet, states, initialState, deltaStar _, accepting)
