@@ -101,6 +101,23 @@ package de.dominicscheurer.fsautils {
 		println("\n(NFA2 toDFA): ")
 		println(myNFA2 toDFA)
 		
+		
+		// Concatenation
+		def states3 = Set(q(2), q(3))            : States
+		def q0_3 = q(2)                          : State
+		def A_NFA3 = Set(q(3))                   : States
+		def delta_NFAOp3 (state: State, letter: Letter) : NFADeltaResult =
+		  (state, letter) match {
+			  case (q(2), 'a) => q(2)
+			  case (q(2), 'b) => q(3)
+			  case _         => None
+			}
+		
+		val myNFA3 = (alphabet, states3, q0_3, delta_NFAOp3 _, A_NFA3) : NFA
+		
+		println("\n(NFA ++ NFA2): ")
+		println(myNFA ++ myNFA3);
+		
 		// RegExp
 		def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
 	  }
