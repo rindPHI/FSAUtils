@@ -67,10 +67,12 @@ package de.dominicscheurer.fsautils {
 	  
 	  def ++(otherOrig: NFA): NFA = {
 	    //TODO: Treat case that this automaton accepts the empty word
+	    
+	    // Rename before concatenation to avoid state name clash
 	    val thisR = this getRenamedCopy 0
 	    val other = otherOrig getRenamedCopy states.size
 	    
-	    def statesCup = thisR.states ++ other.states // TODO: Ensure that states are disjunct
+	    def statesCup = thisR.states ++ other.states
 	    
 	    def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
 		  if (other.states contains state)
