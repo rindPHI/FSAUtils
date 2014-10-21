@@ -102,13 +102,12 @@ package de.dominicscheurer.fsautils {
 		println(myNFA2 toDFA)
 		
 		
-		// Concatenation		
+		// Concatenation
 		println("\n(NFA ++ NFA2): ")
 		println(myNFA ++ myNFA2);
-		
-		
-		val test = myNFA ++ myNFA2
-		println(test accepts "bb")
+				
+		println("\n((NFA with epsilon) ++ NFA2): ")
+		println((alphabet, states, q0, deltaNFA _, A_NFA ++ Set(q(0))) ++ myNFA2);
 		
 		// RegExp
 		def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE

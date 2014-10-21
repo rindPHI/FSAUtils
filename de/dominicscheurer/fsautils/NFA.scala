@@ -68,7 +68,8 @@ package de.dominicscheurer.fsautils {
 	  def ++(otherOrig: NFA): NFA = {
 	    //TODO: Treat case that this automaton accepts the empty word
 	    
-	    if (this accepts "") {
+	    //if (this accepts "") {
+	    if (accepting contains initialState) {
 	      
 	      val noEpsAccepting = accepting.filter(s => s != initialState)	      
 	      val concatNoEps = (alphabet, states, initialState, delta, noEpsAccepting) ++ otherOrig
@@ -77,15 +78,17 @@ package de.dominicscheurer.fsautils {
 	      val thisR = this getRenamedCopy 1
 	      val other = otherOrig getRenamedCopy states.size
 	      
-	      val statesCup = concatNoEps.states ++ Set(q(0))
+	      val statesCup = concatNoEps.states ++ Set(q(-1))
 	      
 	      def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
-	        if (state == q(0))
-	          None //TODO
+	        if (state == q(-1))
+	          optJoin(
+	              thisR.delta (thisR.initialState, letter),
+	              other.delta (other.initialState, letter))
 	        else
 	          concatNoEps.delta (state, letter)
 	      
-	      (alphabet, statesCup, q(0), deltaCup _, other.accepting)
+	      (alphabet, statesCup, q(-1), deltaCup _, concatNoEps.accepting)
 	      
 	    } else {
 	      
