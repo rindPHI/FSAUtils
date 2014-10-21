@@ -27,6 +27,12 @@ package de.dominicscheurer.fsautils {
 	
 	  def unary_! : DFA = new DFA(alphabet, states, initialState, delta, states -- accepting)
 	  
+	  def ++(otherOrig: NFA): DFA = 
+	    ((this: NFA) ++ otherOrig) toDFA
+	    
+	  def ++(otherOrig: DFA): DFA = 
+	    this ++ (otherOrig: NFA)
+	  
 	  override def toString = {
 	    val indentSpace = "    "
 	    val indentBeginner = "|"
