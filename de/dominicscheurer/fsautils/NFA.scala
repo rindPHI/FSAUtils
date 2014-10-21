@@ -69,6 +69,26 @@ package de.dominicscheurer.fsautils {
 	    //TODO: Treat case that this automaton accepts the empty word
 	    
 	    if (this accepts "") {
+	      
+	      val noEpsAccepting = accepting.filter(s => s != initialState)	      
+	      val concatNoEps = (alphabet, states, initialState, delta, noEpsAccepting) ++ otherOrig
+	      
+	      // Rename before concatenation to make place for q(0)
+	      val thisR = this getRenamedCopy 1
+	      val other = otherOrig getRenamedCopy states.size
+	      
+	      val statesCup = concatNoEps.states ++ Set(q(0))
+	      
+	      def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
+	        if (state == q(0))
+	          None //TODO
+	        else
+	          concatNoEps.delta (state, letter)
+	      
+	      (alphabet, statesCup, q(0), deltaCup _, other.accepting)
+	      
+	    } else {
+	      
 	      // Rename before concatenation to avoid state name clash
 	      val thisR = this getRenamedCopy 0
 	      val other = otherOrig getRenamedCopy states.size
@@ -88,33 +108,6 @@ package de.dominicscheurer.fsautils {
 		    
 		    (alphabet, statesCup, thisR.initialState, deltaCup _, other.accepting)
 		    
-	    } else {
-	      
-	      // Treat the special case that the first automaton
-		  // (this one) also accepts the empty word
-	      
-	      // Rename before concatenation to avoid state name clash
-	      val thisR = this getRenamedCopy 1
-	      val other = otherOrig getRenamedCopy (states.size + 1)
-	      
-		  val statesCup = thisR.states ++ other.states ++ Set(q(-1))
-		  
-		  //TODO
-	      def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
-	        if (other.states contains state)
-			  other.delta (state, letter) // Delta_2
-			else if (state == q(0))
-			  null // <== TODO!
-			else // Delta_1 \cup Delta_{1->2}
-			  thisR.delta (state, letter) match {
-			   	case None => None
-			   	case Some(setOfStates) =>
-			   	  Some(setOfStates ++ setOfStates.filter(thisR.accepting contains _)
-			   	      .foldLeft(Set(): Set[State])((_,_) => Set(other.initialState)))
-		      }
-		  
-		  (alphabet, statesCup, thisR.initialState, deltaCup _, other.accepting)
-		  
 	    }
 	  }
 	  
