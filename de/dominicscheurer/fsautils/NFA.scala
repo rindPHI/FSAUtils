@@ -14,7 +14,7 @@ package de.dominicscheurer.fsautils {
 	  require(states contains initialState)
 	  require(accepting subsetOf states)
 
-	  def getRenamedCopy(startVal: Int): NFA = {
+	  private def getRenamedCopy(startVal: Int): NFA = {
 	    val emptyMap : Map[State, State] = Map()
 	    val renameMap : Map[State, State] =
 	      states.foldLeft(emptyMap){ (z,s) =>
@@ -66,49 +66,47 @@ package de.dominicscheurer.fsautils {
 	  }
 	  
 	  def ++(otherOrig: NFA): NFA = {
-	    //TODO: Treat case that this automaton accepts the empty word
-	    
+	    // Rename before concatenation to avoid state name clash
+        val thisR = this getRenamedCopy 0
+        val other = otherOrig getRenamedCopy states.size
+        
+        thisR concat other
+	  }
+	  
+	  private def concat(other: NFA): NFA = {
 	    if (this accepts "") {
 	      
 	      val noEpsAccepting = accepting.filter(s => s != initialState)	      
-	      val concatNoEps = (alphabet, states, initialState, delta, noEpsAccepting) ++ otherOrig
-	      
-	      // Rename before concatenation to make place for q(0)
-	      val thisR = this getRenamedCopy 0
-	      val other = otherOrig getRenamedCopy states.size
+	      val concatNoEps = ((alphabet, states, initialState, delta, noEpsAccepting): NFA) concat other
 	      
 	      val statesCup = concatNoEps.states ++ Set(q(-1))
 	      
 	      def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
 	        if (state == q(-1))
 	          optJoin(
-	              thisR.delta (thisR.initialState, letter),
+	              delta (initialState, letter),
 	              other.delta (other.initialState, letter))
 	        else
 	          concatNoEps.delta (state, letter)
 	      
-	      (alphabet, statesCup, q(-1), deltaCup _, concatNoEps.accepting)
+	      ((alphabet, statesCup, q(-1), deltaCup _, concatNoEps.accepting): NFA) getRenamedCopy 0
 	      
 	    } else {
 	      
-	      // Rename before concatenation to avoid state name clash
-	      val thisR = this getRenamedCopy 0
-	      val other = otherOrig getRenamedCopy states.size
-	      
-		  val statesCup = thisR.states ++ other.states
+		  val statesCup = states ++ other.states
 		    
 		  def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
 		  	if (other.states contains state)
 			  other.delta (state, letter) // Delta_2
 			else // Delta_1 \cup Delta_{1->2}
-			  thisR.delta (state, letter) match {
+			  delta (state, letter) match {
 			   	case None => None
 			   	case Some(setOfStates) =>
-			   	  Some(setOfStates ++ setOfStates.filter(thisR.accepting contains _)
+			   	  Some(setOfStates ++ setOfStates.filter(accepting contains _)
 			   	      .foldLeft(Set(): Set[State])((_,_) => Set(other.initialState)))
 			  }
 		    
-		    (alphabet, statesCup, thisR.initialState, deltaCup _, other.accepting)
+		    (alphabet, statesCup, initialState, deltaCup _, other.accepting)
 		    
 	    }
 	  }
