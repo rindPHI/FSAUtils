@@ -2,6 +2,7 @@ package de.dominicscheurer.fsautils {
 	import Types._
 	import Conversions._
 	import FSAMethods._
+	import Helpers._
 	
 	import Predef.{any2stringadd => _, _}
   
@@ -27,11 +28,24 @@ package de.dominicscheurer.fsautils {
 	
 	  def unary_! : DFA = new DFA(alphabet, states, initialState, delta, states -- accepting)
 	  
-	  def ++(otherOrig: NFA): DFA = 
-	    ((this: NFA) ++ otherOrig) toDFA
+	  def ++(other: NFA): DFA = 
+	    ((this: NFA) ++ other) toDFA
 	    
-	  def ++(otherOrig: DFA): DFA = 
-	    this ++ (otherOrig: NFA)
+	  def ++(other: DFA): DFA = 
+	    this ++ (other: NFA)
+	    
+	  def &(other: DFA): DFA = {
+	    val intersStates = cartesianStateProduct(states, other.states)
+
+	    def intersDelta(s: State, l: Letter): State = s match {
+	      case pair(s1,s2) => pair(delta(s1,l), other.delta(s2,l))
+	      case _ => error("Impossible case")
+	    }
+	    
+	    val intersAccepting = cartesianStateProduct(accepting, other.accepting)
+	    
+	    (alphabet, intersStates, pair(initialState, other.initialState), intersDelta _, intersAccepting)
+	  }
 	  
 	  override def toString = {
 	    val indentSpace = "    "

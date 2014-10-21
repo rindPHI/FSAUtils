@@ -76,10 +76,10 @@ package de.dominicscheurer.fsautils {
 	  private def concat(other: NFA): NFA = {
 	    if (this accepts "") {
 	      
-	      val noEpsAccepting = accepting.filter(s => s != initialState)	      
+	      val noEpsAccepting = accepting - initialState
 	      val concatNoEps = ((alphabet, states, initialState, delta, noEpsAccepting): NFA) concat other
 	      
-	      val statesCup = concatNoEps.states ++ Set(q(-1))
+	      val statesCup = concatNoEps.states + q(-1)
 	      
 	      def deltaCup (state: State, letter: Letter) : Option[Set[State]] =
 	        if (state == q(-1))
