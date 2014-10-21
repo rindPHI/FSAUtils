@@ -68,14 +68,13 @@ package de.dominicscheurer.fsautils {
 	  def ++(otherOrig: NFA): NFA = {
 	    //TODO: Treat case that this automaton accepts the empty word
 	    
-	    //if (this accepts "") {
-	    if (accepting contains initialState) {
+	    if (this accepts "") {
 	      
 	      val noEpsAccepting = accepting.filter(s => s != initialState)	      
 	      val concatNoEps = (alphabet, states, initialState, delta, noEpsAccepting) ++ otherOrig
 	      
 	      // Rename before concatenation to make place for q(0)
-	      val thisR = this getRenamedCopy 1
+	      val thisR = this getRenamedCopy 0
 	      val other = otherOrig getRenamedCopy states.size
 	      
 	      val statesCup = concatNoEps.states ++ Set(q(-1))
