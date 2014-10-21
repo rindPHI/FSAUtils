@@ -22,13 +22,14 @@ Features supported so far
 * Checking for acceptance of a word by an automaton
 * Star-Operation for NFA
 * Complement for DFA
+* Concatenation of NFA/DFA
 * Implicit conversion of DFA to NFA
 * Pretty-printing toString methods for DFA/NFA
 
 Planned Features
 ----------------
 
-* Concatenation, Star, Union, Intersection, Complement for DFA/NFA
+* Star, Union, Intersection, Complement for DFA/NFA
 * Minimization of DFA
 * Determination of the language (RE) of a DFA/NFA
 * Checking for equivalence of DFA/NFA/RE
@@ -93,6 +94,12 @@ println((myNFA toDFA) accepts "aaab")
 
 ````
 println((!myDFA) accepts "aaab")
+````
+
+#### Concatenation
+
+````
+println(myNFA ++ myNFA2);
 ````
 
 #### Pretty Printing
