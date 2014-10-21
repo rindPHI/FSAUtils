@@ -47,6 +47,14 @@ package de.dominicscheurer.fsautils {
 	    (alphabet, intersStates, pair(initialState, other.initialState), intersDelta _, intersAccepting)
 	  }
 	  
+	  def \(other: DFA): DFA =
+	    this & (!other)
+	  
+	  def ==(other: DFA): Boolean =
+	    ((this \ other) isEmpty) && ((other \ this) isEmpty)
+	  
+	  def isEmpty = false //TODO
+	  
 	  override def toString = {
 	    val indentSpace = "    "
 	    val indentBeginner = "|"
