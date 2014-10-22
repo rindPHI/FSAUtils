@@ -52,8 +52,21 @@ package de.dominicscheurer.fsautils {
 	  
 	  def ==(other: DFA): Boolean =
 	    ((this \ other) isEmpty) && ((other \ this) isEmpty)
+	    
+	  private def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
+	    if (toVisit isEmpty) {
+	      List()
+	    } else {
+	      val next = toVisit head
+	      val succ = alphabet.map(l => delta(next, l)).toList diff toVisit diff visited
+	      
+	      next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
+	    }
+	  }
 	  
-	  def isEmpty = false //TODO
+	  def isEmpty: Boolean = accepting.foldLeft(true)(
+			  (acc, s) => acc && !traverseDFS(List(initialState), List()).contains(s)
+	      ) 
 	  
 	  override def toString = {
 	    val indentSpace = "    "
