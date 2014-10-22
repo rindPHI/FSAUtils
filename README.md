@@ -128,7 +128,7 @@ working applied examples.
 
 ### Creation of a DFA
 
-````
+```scala
 val myDFA =
     dfa ('Z, 'S, 'q0, 'd, 'A) where
 	    'Z  ==> Set('a, 'b)   and
@@ -144,11 +144,11 @@ val myDFA =
 
 print("DFA accepts aaab: ")
 println(myDFA accepts "aaab")
-````
+```
 
 ### Creation of an NFA
 
-````
+```scala
 val myNFA =
     nfa ('Z, 'S, 'q0, 'd, 'A) where
         'Z  ==> Set('a, 'b)   and
@@ -162,37 +162,37 @@ val myNFA =
 
 print("NFA accepts aaab: ")
 println(myNFA accepts "aaab")
-````
+```
 
 ### Star Operation for NFA
 
-````
+```scala
 println((myNFA*) accepts "aaabaaab")
-````
+```
 
 ### Determinization for NFA
 
-````
+```scala
 println((myNFA toDFA) accepts "aaab")
-````
+```
 
 ### Complement for DFA
 
-````
+```scala
 println((!myDFA) accepts "aaab")
-````
+```
 
 ### Concatenation
 
-````
+```scala
 println(myNFA ++ myNFA2);
-````
+```
 
 ### Pretty Printing
 
 `println(myNFA toDFA)` yields:
 
-```` 
+```
 DFA (Z,S,q0,d,A) with
 |    Z = {a,b}
 |    S = {{},{0},{1},{0,1}}
@@ -208,13 +208,13 @@ DFA (Z,S,q0,d,A) with
 |        ({0,1},a) => {0,1},
 |        ({0,1},b) => {0}
 |    }
-````
+```
 
 ### Creation of RE
 
-````
+```scala
 def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
-````
+```
 
 License
 -------
