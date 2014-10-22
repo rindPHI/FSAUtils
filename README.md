@@ -53,7 +53,7 @@ Get Started
    ant
    ```
    
-   As the result, you find a file "FSAUtils.jar" in the directory
+   As the result, you find a file "FSAUtils.jar" in the directory `lib/`
    which you need to add to the classpath of scalac and scala in order
    to compile / run your objects that make use of FSAUtils.
    

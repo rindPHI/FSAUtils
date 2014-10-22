@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="FSAUtils">
+<project basedir="." default="package" name="FSAUtils">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <property name="src.dir" value=""/>
-	<property name="build.dir" value="bin"/>
+	<property name="build.dir" value="build"/>
+    <property name="build-lib.dir" value="lib"/>
 	
     <path id="Scala Library">
         <pathelement location="${env.SCALA_HOME}/lib/scala-library.jar"/>
@@ -21,6 +22,7 @@
     	
     <target name="init">
     	<mkdir dir="${build.dir}"/>
+        <mkdir dir="${build-lib.dir}"/>
         <property
             name="scala-library.jar"
             value="${env.SCALA_HOME}/lib/scala-library.jar" />
@@ -39,6 +41,7 @@
 	
     <target name="clean">
         <delete dir="${build.dir}"/>
+        <delete dir="${build-lib.dir}"/>
     </target>
 	
     <target depends="clean" name="cleanall"/>
@@ -52,5 +55,14 @@
     		<exclude name="**/FSA_DSL_Test.scala"/>
     		<src><pathelement location="${src.dir}"/></src>
     	</scalac>
+    </target>
+	
+    <target name="package" depends="build">
+        <jar destfile="${build-lib.dir}/FSA_DSL.jar">
+            <fileset dir="${build.dir}"/>
+        </jar>
+        <jar destfile="${build-lib.dir}/FSA_DSL.src.jar">
+            <fileset dir="${src.dir}" includes="**/*.scala"/>
+        </jar>
     </target>
 </project>
