@@ -34,9 +34,30 @@ Planned Features
 Get Started
 -----------
 
-1. Download and unzip the archive
-2. Run `ant` in the top level directory
-3. In your scala files, add the import
+1. Download the archive:
+   
+   ```bash
+   wget https://github.com/rindPHI/FSAUtils/archive/master.zip
+   ```
+   
+2. Unzip it:
+   
+   ```bash
+   unzip master.zip
+   ```
+   
+2. Build it:
+   
+   ```bash
+   cd FSAUtils-master
+   ant
+   ```
+   
+   As the result, you find a file "FSAUtils.jar" in the directory
+   which you need to add to the classpath of scalac and scala in order
+   to compile / run your objects that make use of FSAUtils.
+   
+3. In your Scala files, add the import
 
    ```scala
    import de.dominicscheurer.fsautils._
@@ -48,15 +69,17 @@ Get Started
    ```scala
    object MyObject extends FSA_DSL {
    ```
+   
 4. Compile your scala object:
    
    ```bash
-   scalac -classpath "/path/to/FSAUtils.bin.jar" YourObject.scala
+   scalac -classpath "/path/to/FSAUtils.jar" YourObject.scala
    ```
+   
 5. ...and run it:
    
    ```bash
-   scala -classpath ".:/path/to/FSAUtils.bin.jar" YourObject
+   scala -classpath ".:/path/to/FSAUtils.jar" YourObject
    ```
 
 Examples
