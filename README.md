@@ -81,6 +81,36 @@ Get Started
    ```bash
    scala -classpath ".:/path/to/FSAUtils.jar" YourObject
    ```
+   
+An example class like mentioned in points 3. to 5. could be, for instance:
+
+```scala
+import de.dominicscheurer.fsautils._
+
+object FSAUtilsTest extends FSA_DSL {
+  
+    def main(args: Array[String]) {
+      val myDFA =
+            dfa ('Z, 'S, 'q0, 'd, 'A) where
+                'Z  ==> Set('a, 'b)   and
+                'S  ==> Set(0, 1)     and
+                'q0 ==> 0             and
+                'A  ==> Set(0)        and
+                'd  ==> Delta(
+                      (0, 'a) -> 0,
+                      (0, 'b) -> 1,
+                      (1, 'a) -> 0,
+                      (1, 'b) -> 1
+                )|
+        
+        print("DFA accepts aaab: ")
+        println(myDFA accepts "aaab")
+        print("DFA accepts aaaba: ")
+        println(myDFA accepts "aaaba")
+    }
+    
+}
+```
 
 Examples
 --------
