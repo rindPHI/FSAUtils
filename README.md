@@ -21,6 +21,7 @@ Features supported so far
 * Creation of Regular Expressions (RE)
 * Checking for acceptance of a word by an automaton
 * Concatenation, Star, Union, Intersection, Complement for DFA/NFA
+* Checking DFA/NFA for equivalence
 * Implicit conversion of DFA to NFA
 * Pretty-printing toString methods for DFA/NFA
 
@@ -29,7 +30,7 @@ Planned Features
 
 * Minimization of DFA
 * Determination of the language (RE) of a DFA/NFA
-* Checking for equivalence of DFA/NFA/RE
+* Checking for equivalence of DFA/NFA with RE
 
 Get Started
 -----------
