@@ -86,19 +86,19 @@ variable <code>$SCALA_HOME</code> has to be correctly set to the path where Scal
 
 <ol>
 <li>
-<p>Download the archive:</p>
+Download the archive:
 
 <div class="highlight highlight-bash"><pre>wget https://github.com/rindPHI/FSAUtils/archive/master.zip
 </pre></div>
 </li>
 <li>
-<p>Unzip it:</p>
+Unzip it:
 
 <div class="highlight highlight-bash"><pre>unzip master.zip
 </pre></div>
 </li>
 <li>
-<p>Build it:</p>
+Build it:
 
 <div class="highlight highlight-bash"><pre><span class="nb">cd </span>FSAUtils-master
 ant
@@ -109,7 +109,7 @@ which you need to add to the classpath of scalac and scala in order
 to compile / run your objects that make use of FSAUtils.</p>
 </li>
 <li>
-<p>In your Scala files, add the import</p>
+In your Scala files, add the import
 
 <div class="highlight highlight-scala"><pre><span class="k">import</span> <span class="nn">de.dominicscheurer.fsautils._</span>
 </pre></div>
@@ -121,13 +121,13 @@ for better readability, let your object extend <code>FSA_DSL</code>:</p>
 </pre></div>
 </li>
 <li>
-<p>Compile your scala object:</p>
+Compile your scala object:
 
 <div class="highlight highlight-bash"><pre>scalac -classpath <span class="s2">"/path/to/FSAUtils.jar"</span> YourObject.scala
 </pre></div>
 </li>
 <li>
-<p>...and run it:</p>
+...and run it:
 
 <div class="highlight highlight-bash"><pre>scala -classpath <span class="s2">".:/path/to/FSAUtils.jar"</span> YourObject
 </pre></div>
