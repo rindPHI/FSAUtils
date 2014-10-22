@@ -28,6 +28,8 @@ package de.dominicscheurer.fsautils {
 	
 	  def unary_! : DFA = new DFA(alphabet, states, initialState, delta, states -- accepting)
 	  
+	  def * : NFA = (this: NFA)*
+	  
 	  def ++(other: NFA): DFA = 
 	    ((this: NFA) ++ other) toDFA
 	    
@@ -45,6 +47,27 @@ package de.dominicscheurer.fsautils {
 	    val intersAccepting = cartesianStateProduct(accepting, other.accepting)
 	    
 	    (alphabet, intersStates, pair(initialState, other.initialState), intersDelta _, intersAccepting)
+	  }
+	  
+	  def \(other: DFA): DFA =
+	    this & (!other)
+	  
+	  def ==(other: DFA): Boolean =
+	    ((this \ other) isEmpty) && ((other \ this) isEmpty)
+	    
+	  def isEmpty: Boolean = accepting.foldLeft(true)(
+			  (acc, s) => acc && !traverseDFS(List(initialState), List()).contains(s)
+	      )
+	    
+	  private def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
+	    if (toVisit isEmpty) {
+	      List()
+	    } else {
+	      val next = toVisit head
+	      val succ = alphabet.map(l => delta(next, l)).toList diff toVisit diff visited
+	      
+	      next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
+	    }
 	  }
 	  
 	  override def toString = {

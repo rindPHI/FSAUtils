@@ -103,14 +103,32 @@ package de.dominicscheurer.fsautils {
 		
 		// Concatenation
 		println("\n(NFA ++ NFA2): ")
-		println(myNFA ++ myNFA2);
+		println(myNFA ++ myNFA2)
 				
 		println("\n((NFA with epsilon) ++ NFA2): ")
-		println((alphabet, states, q0, deltaNFA _, A_NFA ++ Set(q(0))) ++ myNFA2);
+		println((alphabet, states, q0, deltaNFA _, A_NFA ++ Set(q(0))) ++ myNFA2)
+		
+		// Difference
+		println("\n(DFA \\ DFA): ")
+		println(myDFA \ myDFA)
 		
 		// Intersection
 		println("\n(DFA & DFA): ")
-		println(myDFA & myDFA);
+		println(myDFA & myDFA)
+		
+		// Emptyness
+		println("\n(DFA isEmpty): ")
+		println(myDFA isEmpty)
+		
+		println("\n((DFA \\ DFA) isEmpty): ")
+		println((myDFA \ myDFA) isEmpty)
+		
+		// Equality
+		println("\n(DFA == DFA): ")
+		println(myDFA == myDFA)
+		
+		println("\n(DFA == NFA.toDFA): ")
+		println(myDFA == myNFA.toDFA)
 		
 		// RegExp
 		def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
