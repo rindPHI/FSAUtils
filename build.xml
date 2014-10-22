@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="FSAUtils">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <property name="src.dir" value=""/>
+	<property name="build.dir" value="bin"/>
+	
+    <path id="Scala Library">
+        <pathelement location="${env.SCALA_HOME}/lib/scala-library.jar"/>
+        <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar"/>
+        <pathelement location="${env.SCALA_HOME}/lib/scala-actors_*.jar"/>
+        <pathelement location="${env.SCALA_HOME}/lib/scala-swing_*.jar"/>
+    </path>
+	
+    <path id="FSAUtils.classpath">
+        <pathelement location="bin"/>
+        <path refid="Scala Library"/>
+    </path>
+    	
+    <target name="init">
+    	<mkdir dir="${build.dir}"/>
+        <property
+            name="scala-library.jar"
+            value="${env.SCALA_HOME}/lib/scala-library.jar" />
+        <path id="build.classpath">
+            <pathelement location="${scala-library.jar}" />
+            <pathelement location="${build.dir}" />
+        </path>
+        <taskdef resource="scala/tools/ant/antlib.xml">
+        <classpath>
+            <pathelement location="${env.SCALA_HOME}/lib/scala-compiler.jar" />
+            <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar" />
+            <pathelement location="${scala-library.jar}" />
+        </classpath>
+        </taskdef>
+    </target>
+	
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+	
+    <target depends="clean" name="cleanall"/>
+	
+    <target depends="init" name="build">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+    	
+    	<scalac srcdir="${src.dir}" destdir="${build.dir}" force="changed" classpathref="build.classpath">
+    	    <include name="**/*.scala"/>
+    		<exclude name="**/Main.scala"/>
+    		<exclude name="**/FSA_DSL_Test.scala"/>
+    		<src><pathelement location="${src.dir}"/></src>
+    	</scalac>
+    </target>
+</project>
