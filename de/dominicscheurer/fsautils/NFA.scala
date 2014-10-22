@@ -13,6 +13,77 @@ package de.dominicscheurer.fsautils {
 	  
 	  require(states contains initialState)
 	  require(accepting subsetOf states)
+	  
+	  def accepts(word: String): Boolean =
+	    accepts(for (x <- word.toList) yield Symbol(x toString))
+	  
+	  def accepts(word: Word): Boolean = accepts(word, initialState)
+	  
+	  def accepts(word: Word, fromState: State): Boolean = word match {
+	    case Nil => accepting contains fromState
+	    case letter :: rest =>
+	      delta(fromState, letter) match {
+	        case None => false
+	        case Some(listOfStates) =>
+	          listOfStates.foldLeft(false)(
+	            (result: Boolean, possibleSuccessor: State) =>
+	              result || accepts(rest, possibleSuccessor))
+	      }
+	  }
+	  
+	  def unary_! : DFA = !(this toDFA)
+	  
+	  def * : NFA = {
+	    def deltaStar (state: State, letter: Letter) : Option[Set[State]] =
+		  delta (state, letter) match {
+	      	case None => None
+	      	case Some(setOfStates) =>
+	      	  Some(setOfStates ++ setOfStates.filter(accepting contains _)
+	      	      .foldLeft(Set(): Set[State])((_,_) => Set(initialState)))
+	      }
+	    
+	    (alphabet, states, initialState, deltaStar _, accepting)
+	  }
+	  
+	  def ++(otherOrig: NFA): NFA = {
+	    // Rename before concatenation to avoid state name clash
+        val thisR = this getRenamedCopy 0
+        val other = otherOrig getRenamedCopy states.size
+        
+        thisR concat other
+	  }
+	  
+	  def &(other: NFA): DFA = (this toDFA) & (other toDFA)
+	  
+	  def \(other: NFA): DFA =
+	    (this toDFA) \ (other toDFA)
+	  
+	  def ==(other: NFA): Boolean =
+	    (this toDFA) == (other toDFA)
+	    
+	  def isEmpty: Boolean = (this toDFA) isEmpty
+	  
+	  def toDFA : DFA = {
+	    val pStates = powerSet(states).map(setOfStates => set(setOfStates)) : States
+	    val pInitialState = set(Set(initialState)) : State
+	    val pAccepting = pStates.filter{
+	      case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
+	      case _ => error("Impossible case")
+	    }
+	    
+	    def pDelta (state: State, letter: Letter) =
+		  (state, letter) match {
+	      	case (set(setOfStates), letter) =>
+	      	  set(setOfStates.foldLeft(Set(): States)((result, q) =>
+	      	    delta(q, letter) match {
+	      	      case None => result
+	      	      case Some(setOfTargetStates) => result union setOfTargetStates
+	      	    }))
+	        case _ => error("Impossible case")
+	      }
+	    
+	    (alphabet, pStates, pInitialState, pDelta _, pAccepting)
+	  }
 
 	  private def getRenamedCopy(startVal: Int): NFA = {
 	    val emptyMap : Map[State, State] = Map()
@@ -34,43 +105,6 @@ package de.dominicscheurer.fsautils {
 	        renameMap(initialState),
 	        deltaRen _,
 	        accepting.map(s => renameMap(s)))
-	  }
-	  
-	  def accepts(word: String): Boolean =
-	    accepts(for (x <- word.toList) yield Symbol(x toString))
-	  
-	  def accepts(word: Word): Boolean = accepts(word, initialState)
-	  
-	  def accepts(word: Word, fromState: State): Boolean = word match {
-	    case Nil => accepting contains fromState
-	    case letter :: rest =>
-	      delta(fromState, letter) match {
-	        case None => false
-	        case Some(listOfStates) =>
-	          listOfStates.foldLeft(false)(
-	            (result: Boolean, possibleSuccessor: State) =>
-	              result || accepts(rest, possibleSuccessor))
-	      }
-	  }
-	  
-	  def * : NFA = {
-	    def deltaStar (state: State, letter: Letter) : Option[Set[State]] =
-		  delta (state, letter) match {
-	      	case None => None
-	      	case Some(setOfStates) =>
-	      	  Some(setOfStates ++ setOfStates.filter(accepting contains _)
-	      	      .foldLeft(Set(): Set[State])((_,_) => Set(initialState)))
-	      }
-	    
-	    (alphabet, states, initialState, deltaStar _, accepting)
-	  }
-	  
-	  def ++(otherOrig: NFA): NFA = {
-	    // Rename before concatenation to avoid state name clash
-        val thisR = this getRenamedCopy 0
-        val other = otherOrig getRenamedCopy states.size
-        
-        thisR concat other
 	  }
 	  
 	  private def concat(other: NFA): NFA = {
@@ -109,28 +143,6 @@ package de.dominicscheurer.fsautils {
 		    (alphabet, statesCup, initialState, deltaCup _, other.accepting)
 		    
 	    }
-	  }
-	  
-	  def toDFA : DFA = {
-	    val pStates = powerSet(states).map(setOfStates => set(setOfStates)) : States
-	    val pInitialState = set(Set(initialState)) : State
-	    val pAccepting = pStates.filter{
-	      case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
-	      case _ => error("Impossible case")
-	    }
-	    
-	    def pDelta (state: State, letter: Letter) =
-		  (state, letter) match {
-	      	case (set(setOfStates), letter) =>
-	      	  set(setOfStates.foldLeft(Set(): States)((result, q) =>
-	      	    delta(q, letter) match {
-	      	      case None => result
-	      	      case Some(setOfTargetStates) => result union setOfTargetStates
-	      	    }))
-	        case _ => error("Impossible case")
-	      }
-	    
-	    (alphabet, pStates, pInitialState, pDelta _, pAccepting)
 	  }
 	  
 	  override def toString = {

@@ -28,6 +28,8 @@ package de.dominicscheurer.fsautils {
 	
 	  def unary_! : DFA = new DFA(alphabet, states, initialState, delta, states -- accepting)
 	  
+	  def * : NFA = (this: NFA)*
+	  
 	  def ++(other: NFA): DFA = 
 	    ((this: NFA) ++ other) toDFA
 	    
@@ -53,6 +55,10 @@ package de.dominicscheurer.fsautils {
 	  def ==(other: DFA): Boolean =
 	    ((this \ other) isEmpty) && ((other \ this) isEmpty)
 	    
+	  def isEmpty: Boolean = accepting.foldLeft(true)(
+			  (acc, s) => acc && !traverseDFS(List(initialState), List()).contains(s)
+	      )
+	    
 	  private def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
 	    if (toVisit isEmpty) {
 	      List()
@@ -63,10 +69,6 @@ package de.dominicscheurer.fsautils {
 	      next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
 	    }
 	  }
-	  
-	  def isEmpty: Boolean = accepting.foldLeft(true)(
-			  (acc, s) => acc && !traverseDFS(List(initialState), List()).contains(s)
-	      ) 
 	  
 	  override def toString = {
 	    val indentSpace = "    "
