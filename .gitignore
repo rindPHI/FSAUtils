@@ -17,3 +17,9 @@ project/plugins/project/
 .worksheet
 
 *~
+
+.cache
+.classpath
+.project
+.settings/
+*.jar
