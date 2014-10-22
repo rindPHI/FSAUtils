@@ -36,7 +36,7 @@ Get Started
 -----------
 
 **Prerequisites:** You need to have Scala and the JVM installed. FSAUtils
-has been tested with Scala v2.11 and Java 1.7. Furthermore, the environment
+has been tested with Scala 2.11 and Java 1.7. Furthermore, the environment
 variable `$SCALA_HOME` has to be correctly set to the path where Scala resides.
 
 The following steps should work for a Linux system.
