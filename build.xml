@@ -4,7 +4,7 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
-    <property name="src.dir" value=""/>
+    <property name="src.dir" value="src"/>
 	<property name="build.dir" value="build"/>
     <property name="build-lib.dir" value="lib"/>
 	
@@ -13,11 +13,6 @@
         <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar"/>
         <pathelement location="${env.SCALA_HOME}/lib/scala-actors_*.jar"/>
         <pathelement location="${env.SCALA_HOME}/lib/scala-swing_*.jar"/>
-    </path>
-	
-    <path id="FSAUtils.classpath">
-        <pathelement location="bin"/>
-        <path refid="Scala Library"/>
     </path>
     	
     <target name="init">
@@ -60,9 +55,11 @@
     <target name="package" depends="build">
         <jar destfile="${build-lib.dir}/FSA_DSL.jar">
             <fileset dir="${build.dir}"/>
+            <fileset dir="." includes="LICENSE"/>
         </jar>
         <jar destfile="${build-lib.dir}/FSA_DSL.src.jar">
             <fileset dir="${src.dir}" includes="**/*.scala"/>
+            <fileset dir="." includes="LICENSE"/>
         </jar>
     </target>
 </project>
