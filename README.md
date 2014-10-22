@@ -82,7 +82,8 @@ Get Started
    scala -classpath ".:/path/to/FSAUtils.jar" YourObject
    ```
    
-An example class like mentioned in points 3. to 5. could be, for instance:
+An example file like mentioned in points 3. to 5. could have, for instance,
+the following content:
 
 ```scala
 import de.dominicscheurer.fsautils._
