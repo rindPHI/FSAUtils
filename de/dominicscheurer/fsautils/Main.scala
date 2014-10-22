@@ -7,23 +7,38 @@ package de.dominicscheurer.fsautils {
 	
 	import Predef.{any2stringadd => _, _}
   
-	object Main {  
+	object Main extends FSA_DSL {  
 	  def main(args: Array[String]) {
 	    
 	    // DFA
+	    // Non-DSL DFA creation:
 	    def alphabet = Set('a, 'b)
 		def states = Set(q(0), q(1))             : States
 		def q0 = q(0)                            : State
-		def delta (state: State, letter: Letter) =
-		  (state, letter) match {
-			  case (q(0), 'a) => q(0)
-			  case (q(0), 'b) => q(1)
-			  case (q(1), 'a) => q(0)
-			  case (q(1), 'b) => q(1)
-			}
-		def A = Set(q(0))                        : States
+//		def delta (state: State, letter: Letter) =
+//		  (state, letter) match {
+//			  case (q(0), 'a) => q(0)
+//			  case (q(0), 'b) => q(1)
+//			  case (q(1), 'a) => q(0)
+//			  case (q(1), 'b) => q(1)
+//			}
+//		def A = Set(q(0))                        : States
+//		
+//		val myDFA = (alphabet, states, q0, delta _, A) : DFA
 		
-		val myDFA = (alphabet, states, q0, delta _, A) : DFA
+	    // DSL DFA creation:
+		val myDFA =
+		    dfa ('Z, 'S, 'q0, 'd, 'A) where
+			    'Z  ==> Set('a, 'b)   and
+			    'S  ==> Set(0, 1)     and
+			    'q0 ==> 0             and
+			    'A  ==> Set(0)        and
+			    'd  ==> Delta(
+					  (0, 'a) -> 0,
+					  (0, 'b) -> 1,
+					  (1, 'a) -> 0,
+					  (1, 'b) -> 1
+				)|
 		
 		print("DFA accepts aaab: ")
 		println(myDFA accepts "aaab")
@@ -45,8 +60,19 @@ package de.dominicscheurer.fsautils {
 			  case _         => None
 			}
 		def A_NFA = Set(q(1))                       : States
+//		
+//		val myNFA = (alphabet, states, q0, deltaNFA _, A_NFA) : NFA
 		
-		val myNFA = (alphabet, states, q0, deltaNFA _, A_NFA) : NFA
+		val myNFA =
+			    nfa ('Z, 'S, 'q0, 'd, 'A) where
+			        'Z  ==> Set('a, 'b)   and
+			        'S  ==> Set(0, 1)     and
+			        'q0 ==> 0             and
+			        'A  ==> Set(1)        and
+			        'd  ==> Delta(
+			              (0, 'a) -> Set(0, 1),
+			              (0, 'b) -> Set(0)
+			        )||
 		
 		print("NFA accepts aaab: ")
 		println(myNFA accepts "aaab")

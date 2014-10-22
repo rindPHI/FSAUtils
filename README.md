@@ -31,13 +31,41 @@ Planned Features
 * Determination of the language (RE) of a DFA/NFA
 * Checking for equivalence of DFA/NFA/RE
 
+Get Started
+-----------
+
+1. Download and unzip the archive
+2. Run `ant` in the top level directory
+3. In your scala files, add the import
+
+   ```scala
+   import de.dominicscheurer.fsautils._
+   ```
+   
+   and, if you want to use the FSA domain specific language
+   for better readability, let your object extend `FSA_DSL`:
+   
+   ```scala
+   object MyObject extends FSA_DSL {
+   ```
+4. Compile your scala object:
+   
+   ```bash
+   scalac -classpath "/path/to/FSAUtils.bin.jar" YourObject.scala
+   ```
+5. ...and run it:
+   
+   ```bash
+   scala -classpath ".:/path/to/FSAUtils.bin.jar" YourObject
+   ```
+
 Examples
 --------
 
 Please consider the files Main.scala and FSA_DSL_Test.scala to see some
 working applied examples.
 
-#### Creation of a DFA
+### Creation of a DFA
 
 ````
 val myDFA =
@@ -57,7 +85,7 @@ print("DFA accepts aaab: ")
 println(myDFA accepts "aaab")
 ````
 
-#### Creation of an NFA
+### Creation of an NFA
 
 ````
 val myNFA =
@@ -75,31 +103,31 @@ print("NFA accepts aaab: ")
 println(myNFA accepts "aaab")
 ````
 
-#### Star Operation for NFA
+### Star Operation for NFA
 
 ````
 println((myNFA*) accepts "aaabaaab")
 ````
 
-#### Determinization for NFA
+### Determinization for NFA
 
 ````
 println((myNFA toDFA) accepts "aaab")
 ````
 
-#### Complement for DFA
+### Complement for DFA
 
 ````
 println((!myDFA) accepts "aaab")
 ````
 
-#### Concatenation
+### Concatenation
 
 ````
 println(myNFA ++ myNFA2);
 ````
 
-#### Pretty Printing
+### Pretty Printing
 
 `println(myNFA toDFA)` yields:
 
@@ -121,7 +149,7 @@ DFA (Z,S,q0,d,A) with
 |    }
 ````
 
-#### Creation of RE
+### Creation of RE
 
 ````
 def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
