@@ -108,13 +108,13 @@ package de.dominicscheurer.fsautils {
 		println("\n((NFA with epsilon) ++ NFA2): ")
 		println((alphabet, states, q0, deltaNFA _, A_NFA ++ Set(q(0))) ++ myNFA2)
 		
-		// Difference
-		println("\n(DFA \\ DFA): ")
-		println(myDFA \ myDFA)
-		
 		// Intersection
 		println("\n(DFA & DFA): ")
 		println(myDFA & myDFA)
+		
+		// Difference
+		println("\n(DFA \\ DFA): ")
+		println(myDFA \ myDFA)
 		
 		// Emptyness
 		println("\n(DFA isEmpty): ")

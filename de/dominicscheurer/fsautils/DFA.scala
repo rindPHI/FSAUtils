@@ -35,8 +35,8 @@ package de.dominicscheurer.fsautils {
 	    
 	  def ++(other: DFA): DFA = 
 	    this ++ (other: NFA)
-	    
-	  def &(other: DFA): DFA = {
+	  
+	  private def productAutomaton(other: DFA) : DFA = {
 	    val intersStates = cartesianStateProduct(states, other.states)
 
 	    def intersDelta(s: State, l: Letter): State = s match {
@@ -44,9 +44,22 @@ package de.dominicscheurer.fsautils {
 	      case _ => error("Impossible case")
 	    }
 	    
-	    val intersAccepting = cartesianStateProduct(accepting, other.accepting)
+	    (alphabet, intersStates, pair(initialState, other.initialState), intersDelta _, Set(): Set[State])
+	  }
 	    
-	    (alphabet, intersStates, pair(initialState, other.initialState), intersDelta _, intersAccepting)
+	  def &(other: DFA): DFA = {
+	    val intersAccepting = cartesianStateProduct(accepting, other.accepting)
+	    val product = productAutomaton(other)
+	    
+	    (alphabet, product.states, product.initialState, product.delta, intersAccepting)
+	  }
+	  
+	  def |(other: DFA): DFA = {
+	    val unionAccepting = cartesianStateProduct(accepting, other.states) ++
+	    		             cartesianStateProduct(states, other.accepting)
+	    val product = productAutomaton(other)
+	    
+	    (alphabet, product.states, product.initialState, product.delta, unionAccepting)
 	  }
 	  
 	  def \(other: DFA): DFA =

@@ -55,6 +55,8 @@ package de.dominicscheurer.fsautils {
 	  
 	  def &(other: NFA): DFA = (this toDFA) & (other toDFA)
 	  
+	  def |(other: NFA): DFA = (this toDFA) | (other toDFA)
+	  
 	  def \(other: NFA): DFA =
 	    (this toDFA) \ (other toDFA)
 	  
