@@ -176,6 +176,13 @@ package de.dominicscheurer.fsautils {
 		
 		// RegExp
 		def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
+		println("\nRegExp:")
+		println(myRegExp)
+		
+		println("\nDFA toRegExp:")
+		println(myDFA toRegExp)
+		println("\nDFA toRegExp (cleanString):")
+		println((myDFA toRegExp) cleanString)
 	  }
 	}
 }

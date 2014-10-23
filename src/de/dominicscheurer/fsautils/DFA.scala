@@ -22,6 +22,7 @@ package de.dominicscheurer.fsautils {
 	import Conversions._
 	import FSAMethods._
 	import Helpers._
+	import RegularExpressions._
 	
 	import Predef.{any2stringadd => _, _}
   
@@ -90,6 +91,37 @@ package de.dominicscheurer.fsautils {
 	  def isEmpty: Boolean = accepting.foldLeft(true)(
 			  (acc, s) => acc && !traverseDFS(List(initialState), List()).contains(s)
 	      )
+	      
+	  def toRegExp: RE = {
+	    // Rename states: 1 .. n
+	    val renDFA = this getRenamedCopy 1
+	    renDFA.accepting.foldLeft(Empty(): RE)(
+	        (re, s) => re + renDFA.alpha(renDFA.states.size, renDFA initialState, s)
+	    )
+	  }
+	  
+	  private def alpha(k: Int, from: State, to: State): RE =
+	    if (k == 1) {
+	      val oneStepTransitions = alphabet
+	    		  .filter(a => delta(from, a) == to)
+	    		  .foldLeft(Empty(): RE)((re,a) => re + a)
+	      
+	      if (from == to) {
+	        (Empty()*) + oneStepTransitions
+	      } else {
+	        oneStepTransitions
+	      }
+	    } else {
+	      (from,to) match {
+	        case (q(l),q(m)) =>
+	          alpha(k-1, q(l), q(m)) +
+	          (alpha(k-1, q(l), q(k)) &
+	              (alpha(k-1, q(k),q(k))*) &
+	              alpha(k-1, q(k), q(m)))
+	        
+	        case _ => error("Should not happen: Call toRegExp() and not this method")
+	      }
+	    }
 	    
 	  private def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
 	    if (toVisit isEmpty) {
@@ -100,6 +132,24 @@ package de.dominicscheurer.fsautils {
 	      
 	      next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
 	    }
+	  }
+	  
+	  private def getRenamedCopy(startVal: Int): DFA = {
+	    val emptyMap : Map[State, State] = Map()
+	    val renameMap : Map[State, State] =
+	      states.foldLeft(emptyMap){ (z,s) =>
+	      	z + (s -> q(z.size + startVal))
+	      }
+	    val reverseRenameMap = renameMap.map(_.swap)
+	    
+	    def deltaRen (state: State, letter: Letter) : State =
+		  renameMap(delta(reverseRenameMap(state), letter))
+	    
+	    (alphabet,
+	        states.map(s => renameMap(s)),
+	        renameMap(initialState),
+	        deltaRen _,
+	        accepting.map(s => renameMap(s)))
 	  }
 	  
 	  override def toString = {

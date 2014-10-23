@@ -25,11 +25,38 @@ object RegularExpressions {
      def *(): RE = Star(this)
      def +(rhs: RE): RE = Or(this, rhs)
      def &(rhs: RE): RE = Concat(this, rhs)
+     
+     /**
+      * cleanString does some post processing on the
+      * toString method in order to make the output better
+      * readable. However, you naturally achieve better
+      * correctness guarantees without this method (since
+      * this is just string manipulation with regular expressions).
+      */
+     def cleanString = toString
+     	.replace("{} + ", "")
+     	.replace("({})*", "\u025B") // epsilon
+     	.replace("{}", "\u00D8")    // emptyset
+     	.replaceAll("""'([a-z])""", "$1")
+     	.replaceAll("""\(([a-z])\)""", "$1")
+     	.replaceAll("""\(\(([^\(\)]+)\)\)\*""", "($1)*")
+     	.replaceAll("""\(\u025B \+ ([^\(\)]+)\)\*""", "($1)*")
+     	.replaceAll("""\(([a-z])\)\*""", "$1*")
   }
   
-  case class L(l: Letter) extends RE
-  case class Empty() extends RE
-  case class Star(re: RE) extends RE
-  case class Or(lhs: RE, rhs: RE) extends RE
-  case class Concat(lhs: RE, rhs: RE) extends RE
+  case class L(l: Letter) extends RE {
+    override def toString = l toString
+  }
+  case class Empty() extends RE {
+    override def toString = "{}"
+  }
+  case class Star(re: RE) extends RE {
+    override def toString = "(" + re.toString + ")*"
+  }
+  case class Or(lhs: RE, rhs: RE) extends RE {
+    override def toString = "(" + lhs.toString + " + " + rhs.toString + ")"
+  }
+  case class Concat(lhs: RE, rhs: RE) extends RE {
+    override def toString = "(" + lhs.toString + " & " + rhs.toString + ")"
+  }
 }
