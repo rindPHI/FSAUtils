@@ -183,6 +183,8 @@ package de.dominicscheurer.fsautils {
 		println(myDFA toRegExp)
 		println("\nDFA toRegExp (cleanString):")
 		println((myDFA toRegExp) cleanString)
+		println("\nNFA toRegExp (cleanString):")
+		println((myNFA toRegExp) cleanString)
 	  }
 	}
 }

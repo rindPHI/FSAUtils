@@ -33,7 +33,9 @@ object RegularExpressions {
       * correctness guarantees without this method (since
       * this is just string manipulation with regular expressions).
       */
-     def cleanString = toString
+     def cleanString = clean(clean(clean(clean(toString))))
+     	
+     private def clean(s: String) = s
      	.replace("{} + ", "")
      	.replace("({})*", "\u025B") // epsilon
      	.replace("{}", "\u00D8")    // emptyset
@@ -41,7 +43,10 @@ object RegularExpressions {
      	.replaceAll("""\(([a-z])\)""", "$1")
      	.replaceAll("""\(\(([^\(\)]+)\)\)\*""", "($1)*")
      	.replaceAll("""\(\u025B \+ ([^\(\)]+)\)\*""", "($1)*")
-     	.replaceAll("""\(([a-z])\)\*""", "$1*")
+     	.replaceAll(""" [&\+] \u00D8""", "")
+     	.replaceAll("""\u00D8 [&\+] """, "")
+     	.replaceAll("""\(([a-z\u025B])\)([\*]?)""", "$1$2")
+     	.replaceAll("""\(\(([^\(\)]+)\)\)""", "($1)")
   }
   
   case class L(l: Letter) extends RE {
