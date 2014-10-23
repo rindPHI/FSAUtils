@@ -21,6 +21,7 @@ package de.dominicscheurer.fsautils {
 	import Conversions._
 	import Helpers._
 	import FSAMethods._
+	import RegularExpressions._
 
 	class NFA(
 	    var alphabet: Set[Letter],
@@ -82,6 +83,8 @@ package de.dominicscheurer.fsautils {
 	    (this toDFA) == (other toDFA)
 	    
 	  def isEmpty: Boolean = (this toDFA) isEmpty
+	  
+	  def toRegExp: RE = (this toDFA) toRegExp
 	  
 	  def toDFA : DFA = {
 	    val pStates = powerSet(states).map(setOfStates => set(setOfStates)) : States
