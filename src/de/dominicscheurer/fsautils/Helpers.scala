@@ -42,9 +42,17 @@ package de.dominicscheurer.fsautils {
 		  a.foldLeft(None: Option[Set[A]])((acc,elem) => optJoin(acc,elem))
 		  
 		def cartesianStateProduct(a: Set[State], b: Set[State]) : Set[State] =
-		  a.foldLeft(Set(): Set[State])(
-	        (acc,elem) => acc ++ b.foldLeft(Set(): Set[State])(
-	            (acc1,elem1) => acc1 + pair(elem,elem1)
+	      cartesianProduct(a,b).map(p => pair(p._1, p._2))
+//		  a.foldLeft(Set(): Set[State])(
+//	        (acc,elem) => acc ++ b.foldLeft(Set(): Set[State])(
+//	            (acc1,elem1) => acc1 + pair(elem,elem1)
+//	        )
+//	    )
+	    
+	    def cartesianProduct[A](a: Set[A], b: Set[A]) : Set[(A,A)] =
+		  a.foldLeft(Set(): Set[(A,A)])(
+	        (acc,elem) => acc ++ b.foldLeft(Set(): Set[(A,A)])(
+	            (acc1,elem1) => acc1 + (elem -> elem1)
 	        )
 	    )
 	}

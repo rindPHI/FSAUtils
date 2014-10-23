@@ -100,6 +100,34 @@ package de.dominicscheurer.fsautils {
 	    )
 	  }
 	  
+	  def getMinimizedDFA: DFA = {
+	    val rel = (states -- accepting).foldLeft(EmptyRel: AntiReflSymmRel[State])(
+	        (rel,s) => accepting.foldLeft(EmptyRel: AntiReflSymmRel[State])(
+	        	(_,a) => rel + (s, a)
+	        )
+	    )
+	    
+	    getMinimizedDFA(rel)
+	  }
+	  
+	  private def getMinimizedDFA(rel: AntiReflSymmRel[State]): DFA = {
+	    val differentPairs = cartesianProduct(states, states).filter(p => p match {
+	        case (k, l) => rel.inRel(k, l) ||
+	        		alphabet.foldLeft(false)(
+	        		    (acc,a) => acc || rel.inRel(delta(k,a), delta(l,a))
+	        		)
+	  	    case _ => error("Should not happen")
+		})
+	    
+		val newRel = new AntiReflSymmRel(differentPairs)
+	    
+	    if (rel == newRel) {
+	      error("TODO: Construct automaton from rel")
+	    } else {
+	      getMinimizedDFA(newRel)
+	    }
+	  }
+	  
 	  private def alpha(k: Int, from: State, to: State): RE =
 	    if (k == 1) {
 	      val oneStepTransitions = alphabet
