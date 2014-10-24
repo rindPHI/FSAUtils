@@ -88,6 +88,9 @@ package de.dominicscheurer.fsautils {
 	  
 	  def ==(other: DFA): Boolean =
 	    ((this \ other) isEmpty) && ((other \ this) isEmpty)
+	  
+	  def ==(other: NFA): Boolean =
+	    this == other.toDFA
 	    
 	  def isEmpty: Boolean = accepting.foldLeft(true)(
 			  (acc, s) => acc && !traverseDFS(List(initialState), List()).contains(s)

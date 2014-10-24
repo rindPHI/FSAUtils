@@ -19,12 +19,18 @@
 package de.dominicscheurer.fsautils
 
 import Types._
+import Conversions._
 
 object RegularExpressions {
-  sealed abstract class RE {
+  sealed abstract class RE extends FSA_DSL {
      def *(): RE = Star(this)
      def +(rhs: RE): RE = Or(this, rhs)
      def &(rhs: RE): RE = Concat(this, rhs)
+     
+     def alphabet: Set[Letter]
+     
+     def toNFA: NFA = toNFAInt(alphabet)
+     def toNFAInt(alph: Set[Letter]): NFA
      
      /**
       * cleanString does some post processing on the
@@ -62,17 +68,50 @@ object RegularExpressions {
   
   case class L(l: Letter) extends RE {
     override def toString = l toString
+    override def alphabet = Set(l)
+    override def toNFAInt(alph: Set[Letter]) =
+	    nfa ('Z, 'S, 'q0, 'd, 'A) where
+	        'Z  ==> alph          and
+	        'S  ==> Set(0, 1)     and
+	        'q0 ==> 0             and
+	        'A  ==> Set(1)        and
+	        'd  ==> Delta(
+	              (0, l) -> Set(1)
+	        )||
   }
+  
   case class Empty() extends RE {
     override def toString = "{}"
+    override def alphabet = Set()
+    override def toNFAInt(alph: Set[Letter]) = {
+        val emptyAcc: Set[Int] = Set()
+        val emptyMap: Map[(Int, Letter), Set[Int]] = Map()
+	    nfa ('Z, 'S, 'q0, 'd, 'A) where
+	        'Z  ==> alph          and   
+	        'S  ==> Set(0)        and
+	        'q0 ==> 0             and
+	        'A  ==> emptyAcc      and
+	        'd  ==> DeltaRel(
+            	emptyMap
+            ) ||
+    }
   }
+  
   case class Star(re: RE) extends RE {
     override def toString = "(" + re.toString + ")*"
+    override def alphabet = re.alphabet
+    override def toNFAInt(alph: Set[Letter]) = (re toNFAInt alph)*
   }
+  
   case class Or(lhs: RE, rhs: RE) extends RE {
     override def toString = "(" + lhs.toString + " + " + rhs.toString + ")"
+    override def alphabet = lhs.alphabet ++ rhs.alphabet
+    override def toNFAInt(alph: Set[Letter]) = ((lhs toNFAInt alph) | (rhs toNFAInt alph)) : NFA
   }
+  
   case class Concat(lhs: RE, rhs: RE) extends RE {
     override def toString = "(" + lhs.toString + " & " + rhs.toString + ")"
+    override def alphabet = lhs.alphabet ++ rhs.alphabet
+    override def toNFAInt(alph: Set[Letter]) = ((lhs toNFAInt alph) ++ (rhs toNFAInt alph)) : NFA
   }
 }

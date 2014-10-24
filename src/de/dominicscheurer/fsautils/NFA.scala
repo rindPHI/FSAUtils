@@ -81,6 +81,9 @@ package de.dominicscheurer.fsautils {
 	  
 	  def ==(other: NFA): Boolean =
 	    (this toDFA) == (other toDFA)
+	  
+	  def ==(other: DFA): Boolean =
+	    (this toDFA) == (other toDFA)
 	    
 	  def isEmpty: Boolean = (this toDFA) isEmpty
 	  

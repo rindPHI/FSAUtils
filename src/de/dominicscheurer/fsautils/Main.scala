@@ -200,8 +200,24 @@ package de.dominicscheurer.fsautils {
 		println("\nNFA toDFA (minimized) toRegExp (cleanString):") // Why is this not shorter???
 		println(detRenNFA.toRegExp.cleanString)
 		
-		println("\nNFA toDFA (minimized) == NFA toDFA:")
+		print("\nNFA toDFA (minimized) == NFA toDFA: ")
 		println(myNFA.toDFA.minimize == myNFA.toDFA)
+		
+		// RE2NFS
+		
+		val re: RE = ('a*) + ('b)
+//		val re: RE = ('b)
+		println("Alphabet of " + (re cleanString) + ": " + re.alphabet)
+		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
+		
+//		println("\nDFA toRegExp:")
+//		println(myDFA.toRegExp cleanString)
+//		
+//		println("\nDFA toRegExp toNFA:")
+//		println(myDFA.toRegExp.toNFA)
+//		
+//		println("\nDFA toRegExp toNFA == DFA:")
+//		println(myDFA.toRegExp.toNFA == myDFA)
 	  }
 	}
 }
