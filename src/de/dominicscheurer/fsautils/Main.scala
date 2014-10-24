@@ -222,7 +222,7 @@ package de.dominicscheurer.fsautils {
 		println(res1)
 		
 		println("'Manual' Test:")
-		println(res | res1)
+		println(res.extendAlphabet(res1.alphabet) | res1.extendAlphabet(res.alphabet))
 		
 //		println("'Manual' Test:")
 //		println((('a*).toNFA.toDFA | ('b).toNFA.toDFA).getRenamedCopy(0))

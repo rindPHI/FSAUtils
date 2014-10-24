@@ -90,8 +90,6 @@ package de.dominicscheurer.fsautils {
         }
 
         def ++(otherOrig: NFA): NFA = {
-            require(alphabet equals otherOrig.alphabet)
-            
             // Rename before concatenation to avoid state name clash
             val thisR = this getRenamedCopy 0
             val other = otherOrig getRenamedCopy states.size
@@ -161,8 +159,6 @@ package de.dominicscheurer.fsautils {
         }
 
         private def concat(other: NFA): NFA = {
-            require(alphabet equals other.alphabet)
-            
             if (this accepts "") {
 
                 val noEpsAccepting = accepting - initialState

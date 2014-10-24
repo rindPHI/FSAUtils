@@ -76,6 +76,7 @@ package de.dominicscheurer.fsautils {
 
         def &(other: DFA): DFA = {
             require(alphabet equals other.alphabet)
+	        require(states.intersect(other.states).isEmpty)
             
             val intersAccepting = cartesianStateProduct(accepting, other.accepting)
             val product = productAutomaton(other)
@@ -86,11 +87,17 @@ package de.dominicscheurer.fsautils {
         def |(other: DFA): DFA = {
             require(alphabet equals other.alphabet)
             
-            val unionAccepting = cartesianStateProduct(accepting, other.states) ++
-                cartesianStateProduct(states, other.accepting)
-            val product = productAutomaton(other)
-
-            (alphabet, product.states, product.initialState, product.delta, unionAccepting)
+            if (!(states.intersect(other.states).isEmpty)) {
+                (this.getRenamedCopy(0)) | (other.getRenamedCopy(states.size))
+            } else {
+	            require(states.intersect(other.states).isEmpty)
+	            
+	            val unionAccepting = cartesianStateProduct(accepting, other.states) ++
+	                cartesianStateProduct(states, other.accepting)
+	            val product = productAutomaton(other)
+	
+	            (alphabet, product.states, product.initialState, product.delta, unionAccepting)
+            }
         }
 
         def \(other: DFA): DFA = {
