@@ -80,7 +80,7 @@ package de.dominicscheurer.fsautils {
 	    		             cartesianStateProduct(states, other.accepting)
 	    val product = productAutomaton(other)
 	    
-	    (alphabet, product.states, product.initialState, product.delta, unionAccepting)
+	    (alphabet ++ other.alphabet, product.states, product.initialState, product.delta, unionAccepting)
 	  }
 	  
 	  def \(other: DFA): DFA =

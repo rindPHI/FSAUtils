@@ -207,8 +207,12 @@ package de.dominicscheurer.fsautils {
 		
 		val re: RE = ('a*) + ('b)
 //		val re: RE = ('b)
-		println("Alphabet of " + (re cleanString) + ": " + re.alphabet)
-		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
+		println(('a).toNFA)
+		println(('a*).toNFA) // Something wrong here!!!
+//		println(('b).toNFA.toDFA.minimize.getRenamedCopy(0))
+//		println((('a*).toNFA | ('b).toNFA).minimize.getRenamedCopy(0))
+//		println(re.toNFA.getRenamedCopy(0)) // Something does not work here!
+//		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
 		
 //		println("\nDFA toRegExp:")
 //		println(myDFA.toRegExp cleanString)
