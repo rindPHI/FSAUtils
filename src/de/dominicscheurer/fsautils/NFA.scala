@@ -170,7 +170,7 @@ package de.dominicscheurer.fsautils {
                     else
                         concatNoEps.delta(state, letter)
 
-                ((alphabet, statesCup, q(-1), deltaCup _, concatNoEps.accepting): NFA) getRenamedCopy 0
+                ((alphabet ++ other.alphabet, statesCup, q(-1), deltaCup _, concatNoEps.accepting): NFA) getRenamedCopy 0
 
             } else {
 
@@ -187,7 +187,7 @@ package de.dominicscheurer.fsautils {
                                     .foldLeft(Set(): Set[State])((_, _) => Set(other.initialState)))
                         }
 
-                (alphabet, statesCup, initialState, deltaCup _, other.accepting)
+                (alphabet ++ other.alphabet, statesCup, initialState, deltaCup _, other.accepting)
 
             }
         }

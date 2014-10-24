@@ -207,10 +207,13 @@ package de.dominicscheurer.fsautils {
 		
 		val re: RE = ('a*) + ('b)
 //		val re: RE = ('b)
-		println(('a).toNFA)
-		println(('a*).toNFA) // Something wrong here!!!
 //		println(('b).toNFA.toDFA.minimize.getRenamedCopy(0))
-//		println((('a*).toNFA | ('b).toNFA).minimize.getRenamedCopy(0))
+		println("\na* toNFA")
+		println(('a*).toNFA)
+		println("\nb toNFA")
+		println(('b).toNFA)
+		println("\n(a* + b) toNFA")
+		println((('a*).toNFA ++ ('b).toNFA))
 //		println(re.toNFA.getRenamedCopy(0)) // Something does not work here!
 //		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
 		
