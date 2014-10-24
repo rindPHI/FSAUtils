@@ -101,14 +101,39 @@ package de.dominicscheurer.fsautils {
 	    )
 	  }
 	  
-	  def minimize: DFA = {
-	    val rel = (states -- accepting).foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
-	        (rel,s) => accepting.foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
-	        	(_,a) => rel + (s, a)
-	        )
-	    )
+	  def getRenamedCopy(startVal: Int): DFA = {
+	    val emptyMap : Map[State, State] = Map()
+	    val renameMap : Map[State, State] =
+	      states.foldLeft(emptyMap){ (z,s) =>
+	      	z + (s -> q(z.size + startVal))
+	      }
+	    val reverseRenameMap = renameMap.map(_.swap)
 	    
-	    minimize(rel)
+	    def deltaRen (state: State, letter: Letter) : State =
+		  renameMap(delta(reverseRenameMap(state), letter))
+	    
+	    (alphabet,
+	        states.map(s => renameMap(s)),
+	        renameMap(initialState),
+	        deltaRen _,
+	        accepting.map(s => renameMap(s)))
+	  }
+	  
+	  def minimize: DFA = {
+	    // first, remove unreachable states
+	    val reachableStates = states intersect (Set() ++ traverseDFS(List(initialState), List()))
+	    val reachableAccepting = accepting intersect reachableStates
+	    
+	    val rel = (reachableStates -- reachableAccepting)
+		    .foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
+		        (rel,s) => reachableAccepting.foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
+		        	(_,a) => rel + (s, a)
+		        )
+		    )
+		    
+		val reachDFA = (alphabet, reachableStates, initialState , delta, reachableAccepting) : DFA
+	    
+	    reachDFA minimize rel
 	  }
 	  
 	  private def minimize(rel: AntiReflSymmRel[State]): DFA = {
@@ -136,13 +161,6 @@ package de.dominicscheurer.fsautils {
 	        val newStates = eqRel.equivalenceClasses.map(
 	            setOfStates => set(setOfStates)
 	        ): Set[State]
-	        
-	        println(eqRel)
-	        println(eqRel.equivalenceClasses)
-//	        println(cartProd)
-//	        println(cartProd.filter(p => !rel.inRel(p._1,p._2)))
-//	        println(newStates)
-//	        println(initialState)
 	        
 	        val newInitialState = newStates.filter(state => state match {
 	            case set(setOfStates: Set[State]) => setOfStates contains initialState
@@ -209,24 +227,6 @@ package de.dominicscheurer.fsautils {
 	      
 	      next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
 	    }
-	  }
-	  
-	  private def getRenamedCopy(startVal: Int): DFA = {
-	    val emptyMap : Map[State, State] = Map()
-	    val renameMap : Map[State, State] =
-	      states.foldLeft(emptyMap){ (z,s) =>
-	      	z + (s -> q(z.size + startVal))
-	      }
-	    val reverseRenameMap = renameMap.map(_.swap)
-	    
-	    def deltaRen (state: State, letter: Letter) : State =
-		  renameMap(delta(reverseRenameMap(state), letter))
-	    
-	    (alphabet,
-	        states.map(s => renameMap(s)),
-	        renameMap(initialState),
-	        deltaRen _,
-	        accepting.map(s => renameMap(s)))
 	  }
 	  
 	  override def toString = {

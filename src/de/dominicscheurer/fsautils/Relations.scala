@@ -32,7 +32,7 @@ object Relations {
 	    def this() = this(Set(), Set())
 	    
 	    def +(a: A, b: A): EquivRel[A] = {		  
-		  val newVals = map + (a -> b) + (b -> a)
+		  val newVals = map + (a -> b) + (b -> a) + (a -> a) + (b -> b)
 		  val transClosure = transitiveClosure(newVals)
 		  new EquivRel[A] (transClosure, getValues(transClosure))
 		}
@@ -53,22 +53,20 @@ object Relations {
 	        val valList = values toList : List[A]
 	        valList match {
 	            case h :: t =>
-	                equivalenceClasses(h, t)
+	                equivalenceClasses(h, List(h), t)
 	            case Nil =>
 	                Set()
 	        }
 	    }
 		  
-		private def equivalenceClasses(forElem: A, rest: List[A]): Set[Set[A]] = {
-	        val classForElem = rest
+		private def equivalenceClasses(forElem: A, seen: List[A], rest: List[A]): Set[Set[A]] = {
+	        val classForElem = (rest ++ seen)
 	        		.filter(p => inRel(forElem, p))
-	        		.foldLeft(Set(): Set[A])((set,p) => set + p) + forElem
-	        
-	        println("Class for elem " + forElem + ": " + classForElem)
+	        		.foldLeft(Set(): Set[A])((set,p) => set + p) + forElem : Set[A]
 	        
 	        rest match {
 	            case h :: t =>
-	                equivalenceClasses(h, t) + classForElem
+	                equivalenceClasses(h, h :: seen, t) + classForElem
 	            case Nil =>
 	                Set(classForElem)
 	        }

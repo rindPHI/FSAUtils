@@ -187,11 +187,21 @@ package de.dominicscheurer.fsautils {
 		println((myNFA toRegExp) cleanString)
 		
 		// Minimization
-		println("\nNFA toDFA (minimized):")
-		println(myNFA.toDFA.minimize)
+		val detRenNFA = myNFA.toDFA.getRenamedCopy(0)
+		println("\nNFA (renamed) toDFA:")
+		println(detRenNFA)
 		
-		println("\nNFA toDFA (minimized) toRegExp (cleanString):")
-		println(myNFA.toDFA.minimize.toRegExp.cleanString)
+		println("\nNFA (renamed) toDFA (minimized):")
+		println(detRenNFA.minimize)
+		
+		println("\nNFA toDFA toRegExp (cleanString):")
+		println(myNFA.toRegExp.cleanString)
+		
+		println("\nNFA toDFA (minimized) toRegExp (cleanString):") // Why is this not shorter???
+		println(detRenNFA.toRegExp.cleanString)
+		
+		println("\nNFA toDFA (minimized) == NFA toDFA:")
+		println(myNFA.toDFA.minimize == myNFA.toDFA)
 	  }
 	}
 }
