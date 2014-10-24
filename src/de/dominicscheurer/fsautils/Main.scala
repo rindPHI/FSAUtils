@@ -185,6 +185,13 @@ package de.dominicscheurer.fsautils {
 		println((myDFA toRegExp) cleanString)
 		println("\nNFA toRegExp (cleanString):")
 		println((myNFA toRegExp) cleanString)
+		
+		// Minimization
+		println("\nNFA toDFA (minimized):")
+		println(myNFA.toDFA.minimize)
+		
+		println("\nNFA toDFA (minimized) toRegExp (cleanString):")
+		println(myNFA.toDFA.minimize.toRegExp.cleanString)
 	  }
 	}
 }

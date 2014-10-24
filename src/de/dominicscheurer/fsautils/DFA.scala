@@ -23,6 +23,7 @@ package de.dominicscheurer.fsautils {
 	import FSAMethods._
 	import Helpers._
 	import RegularExpressions._
+	import Relations._
 	
 	import Predef.{any2stringadd => _, _}
   
@@ -100,18 +101,19 @@ package de.dominicscheurer.fsautils {
 	    )
 	  }
 	  
-	  def getMinimizedDFA: DFA = {
-	    val rel = (states -- accepting).foldLeft(EmptyRel: AntiReflSymmRel[State])(
-	        (rel,s) => accepting.foldLeft(EmptyRel: AntiReflSymmRel[State])(
+	  def minimize: DFA = {
+	    val rel = (states -- accepting).foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
+	        (rel,s) => accepting.foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
 	        	(_,a) => rel + (s, a)
 	        )
 	    )
 	    
-	    getMinimizedDFA(rel)
+	    minimize(rel)
 	  }
 	  
-	  private def getMinimizedDFA(rel: AntiReflSymmRel[State]): DFA = {
-	    val differentPairs = cartesianProduct(states, states).filter(p => p match {
+	  private def minimize(rel: AntiReflSymmRel[State]): DFA = {
+	    val cartProd = cartesianProduct(states, states)
+	    val differentPairs = cartProd.filter(p => p match {
 	        case (k, l) => rel.inRel(k, l) ||
 	        		alphabet.foldLeft(false)(
 	        		    (acc,a) => acc || rel.inRel(delta(k,a), delta(l,a))
@@ -119,12 +121,59 @@ package de.dominicscheurer.fsautils {
 	  	    case _ => error("Should not happen")
 		})
 	    
-		val newRel = new AntiReflSymmRel(differentPairs)
+		val newRel = rel ++ differentPairs
 	    
 	    if (rel == newRel) {
-	      error("TODO: Construct automaton from rel")
+	        
+	        // Recursion anchor:
+	        // The distinguishing relation does not change in the next
+	        // iteration, so we construct the resulting automaton now
+	        // by "contracting" the states that are not distinguished
+	        
+	        val eqRel: EquivRel[State] =
+	            new EquivRel() ++ cartProd.filter(p => !rel.inRel(p._1,p._2))
+	        
+	        val newStates = eqRel.equivalenceClasses.map(
+	            setOfStates => set(setOfStates)
+	        ): Set[State]
+	        
+	        println(eqRel)
+	        println(eqRel.equivalenceClasses)
+//	        println(cartProd)
+//	        println(cartProd.filter(p => !rel.inRel(p._1,p._2)))
+//	        println(newStates)
+//	        println(initialState)
+	        
+	        val newInitialState = newStates.filter(state => state match {
+	            case set(setOfStates: Set[State]) => setOfStates contains initialState
+	            case _ => error("Impossible case.")
+	        }) head: State
+	        
+	        val newAccepting = newStates.filter(state => state match {
+	            case set(setOfStates: Set[State]) => (setOfStates intersect accepting).nonEmpty
+	            case _ => error("Impossible case.")
+	        }): Set[State]
+
+            def newDelta(state: State, letter: Letter): State =
+                (state) match {
+                    case set(setOfStates) => {
+                        val someState = setOfStates head
+                        val transResult = delta(someState, letter)
+                        
+                        newStates.filter(state => state match {
+				            case set(setOfStates: Set[State]) => setOfStates contains transResult
+				            case _ => error("Impossible case.")
+				        }) head
+                    }
+                    case _ => error("Impossible case.")
+                }
+	        
+	    	(alphabet, newStates, newInitialState, newDelta _, newAccepting) : DFA
+	    	
 	    } else {
-	      getMinimizedDFA(newRel)
+	        
+	    	minimize(newRel)
+	    	
 	    }
 	  }
 	  
