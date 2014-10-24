@@ -205,15 +205,32 @@ package de.dominicscheurer.fsautils {
 		
 		// RE2NFS
 		
-		val re: RE = ('a*) + ('b)
-//		val re: RE = ('b)
-//		println(('b).toNFA.toDFA.minimize.getRenamedCopy(0))
-		println("\na* toNFA")
-		println(('a*).toNFA)
-		println("\nb toNFA")
-		println(('b).toNFA)
-		println("\n(a* + b) toNFA")
-		println((('a*).toNFA ++ ('b).toNFA))
+		println("\n(a* & b) toNFA")
+		println((('a*) & ('b)).toNFA)
+		
+		val re: RE = ('a*) & ('b)
+		
+		// From here, experimental
+		
+		val res = ('a*).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
+		val res1 = ('b).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
+		
+		println("\n(a*) toNFA toDFA minimize (renamed)")
+		println(res)
+		
+		println("\n(b) toNFA toDFA minimize (renamed)")
+		println(res1)
+		
+		println("'Manual' Test:")
+		println(res | res1)
+		
+//		println("'Manual' Test:")
+//		println((('a*).toNFA.toDFA | ('b).toNFA.toDFA).getRenamedCopy(0))
+//		
+//		println("\n(a* + b) toNFA (renamed)")
+//		println((('a*) + ('b)).toNFA.toDFA.minimize.getRenamedCopy(0))
+		
+		
 //		println(re.toNFA.getRenamedCopy(0)) // Something does not work here!
 //		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
 		

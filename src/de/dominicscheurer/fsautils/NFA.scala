@@ -49,6 +49,10 @@ package de.dominicscheurer.fsautils {
                                 result || accepts(rest, possibleSuccessor))
                 }
         }
+        
+        def extendAlphabet(newLetters: Set[Letter]): NFA = {
+            (alphabet ++ newLetters, states, initialState, delta, accepting)
+        }
 
         def unary_! : DFA = !(this toDFA)
 
@@ -86,6 +90,8 @@ package de.dominicscheurer.fsautils {
         }
 
         def ++(otherOrig: NFA): NFA = {
+            require(alphabet equals otherOrig.alphabet)
+            
             // Rename before concatenation to avoid state name clash
             val thisR = this getRenamedCopy 0
             val other = otherOrig getRenamedCopy states.size
@@ -155,6 +161,8 @@ package de.dominicscheurer.fsautils {
         }
 
         private def concat(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
             if (this accepts "") {
 
                 val noEpsAccepting = accepting - initialState
@@ -165,7 +173,7 @@ package de.dominicscheurer.fsautils {
                 def deltaCup(state: State, letter: Letter): Option[Set[State]] =
                     if (state == q(-1))
                         optJoin(
-                            delta(initialState, letter),
+                            concatNoEps.delta(initialState, letter),
                             other.delta(other.initialState, letter))
                     else
                         concatNoEps.delta(state, letter)
