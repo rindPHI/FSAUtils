@@ -25,12 +25,12 @@ Features supported so far
 * Implicit conversion of DFA to NFA
 * Pretty-printing toString methods for DFA/NFA
 * Determination of the language (RE) of a DFA/NFA
+* Minimization of DFA
 
 Planned Features
 ----------------
 
-* Minimization of DFA
-* Checking for equivalence of DFA/NFA with RE
+* Checking for equivalence of DFA/NFA with RE (i.e., RE to DFA)
 
 Get Started
 -----------
