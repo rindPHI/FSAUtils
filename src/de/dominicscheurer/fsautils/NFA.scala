@@ -96,13 +96,9 @@ package de.dominicscheurer.fsautils {
             
             val productStates = cartesianStateProduct(states, other.states)
 
-            def productDelta(s: State, l: Letter): Option[Set[State]] = s match {
+            def productDelta(s: State, l: Letter): Set[State] = s match {
                 case pair(s1, s2) => {
-                    val resProd = cartesianStateProduct(optSetToSet(delta(s1, l)), optSetToSet(other.delta(s2, l)))
-                    if (resProd.isEmpty)
-                        None
-                    else
-                        Some(resProd)
+                    cartesianStateProduct(delta(s1, l), other.delta(s2, l))
                 }
                 case _ => error("Impossible case")
             }
@@ -110,7 +106,6 @@ package de.dominicscheurer.fsautils {
             (alphabet, productStates, pair(initialState, other.initialState), productDelta _, Set(): Set[State])
         }
 
-//        def &(other: NFA): DFA = (this toDFA) & (other toDFA)
         def &(other: NFA): NFA = {
             require(alphabet equals other.alphabet)
             
@@ -120,15 +115,27 @@ package de.dominicscheurer.fsautils {
             (alphabet, product.states, product.initialState, product.delta, intersAccepting)
         }
 
-//        def |(other: NFA): DFA = (this toDFA) | (other toDFA)
         def |(other: NFA): NFA = {
             require(alphabet equals other.alphabet)
+            
+            if (   !(states intersect other.states).isEmpty
+                || (states union other.states).contains(q(0)))
+                getRenamedCopy(1) | other.getRenamedCopy(states.size + 1)
+            else {
+                def newDelta(s: State, l: Letter): Set[State] =
+                    if (s == q(0))
+                        delta(initialState, l) ++ other.delta(other.initialState, l)
+                    else
+                        if (states.contains(s))
+                            delta(s, l)
+                        else
+                            other.delta(s,l)
                 
-            val unionAccepting = cartesianStateProduct(accepting, other.states) ++
-                cartesianStateProduct(states, other.accepting)
-            val product = productAutomaton(other)
-
-            (alphabet, product.states, product.initialState, product.delta, unionAccepting)
+                if ((this accepts "") || (other accepts ""))
+                    (alphabet, states ++ other.states + q(0), q(0), newDelta _, accepting ++ other.accepting + q(0))
+                else
+                    (alphabet, states ++ other.states + q(0), q(0), newDelta _, accepting ++ other.accepting)
+            }
         }
 
         def \(other: NFA): DFA =
