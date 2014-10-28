@@ -44,7 +44,13 @@ package de.dominicscheurer.fsautils {
 	  
 	  implicit def DFAtoNFA[T](dfa: DFA) : NFA =
 	    (dfa.alphabet, dfa.states, dfa.initialState,
-	        (state: State, letter: Letter) => Some(Set(dfa.delta(state, letter))),
+	        (state: State, letter: Letter) => {
+	            try {
+	            	Some(Set(dfa.delta(state, letter)))
+	            } catch {
+	                case _: Throwable => None
+	            }
+	        },
 	        dfa.accepting)
 	  
 	  implicit def REFromLetter(
