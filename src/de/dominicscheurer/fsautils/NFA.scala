@@ -97,9 +97,45 @@ package de.dominicscheurer.fsautils {
             thisR concat other
         }
 
-        def &(other: NFA): DFA = (this toDFA) & (other toDFA)
+        private def productAutomaton(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            val productStates = cartesianStateProduct(states, other.states)
 
-        def |(other: NFA): DFA = (this toDFA) | (other toDFA)
+            def productDelta(s: State, l: Letter): Option[Set[State]] = s match {
+                case pair(s1, s2) => {
+                    val resProd = cartesianStateProduct(optSetToSet(delta(s1, l)), optSetToSet(other.delta(s2, l)))
+                    if (resProd.isEmpty)
+                        None
+                    else
+                        Some(resProd)
+                }
+                case _ => error("Impossible case")
+            }
+
+            (alphabet, productStates, pair(initialState, other.initialState), productDelta _, Set(): Set[State])
+        }
+
+//        def &(other: NFA): DFA = (this toDFA) & (other toDFA)
+        def &(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            val intersAccepting = cartesianStateProduct(accepting, other.accepting)
+            val product = productAutomaton(other)
+
+            (alphabet, product.states, product.initialState, product.delta, intersAccepting)
+        }
+
+//        def |(other: NFA): DFA = (this toDFA) | (other toDFA)
+        def |(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+                
+            val unionAccepting = cartesianStateProduct(accepting, other.states) ++
+                cartesianStateProduct(states, other.accepting)
+            val product = productAutomaton(other)
+
+            (alphabet, product.states, product.initialState, product.delta, unionAccepting)
+        }
 
         def \(other: NFA): DFA =
             (this toDFA) \ (other toDFA)

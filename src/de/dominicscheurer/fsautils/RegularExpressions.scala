@@ -119,9 +119,15 @@ object RegularExpressions {
         val res2p1 = (Empty()*) + 'a: RE
         val res2p2 = ('b & ('b*)): RE
         val res2p3 = 'a: RE
-//        
-//        println("\nPart 1: {}* + a")
+        
+        println("\nPart 1: {}* + a")
 //        println(res2p1.toNFA.toDFA.minimize.getRenamedCopy(0))
+        println((Empty()*).toNFA.extendAlphabet(Set('a)) | 'a.toNFA)
+        
+        println("\n> {}*")
+        println((Empty()*).toNFA)
+        println("\n> a")
+        println('a.toNFA)
 //        println("\nPart 2: b & b*")
 //        println(res2p2.toNFA)
 //        println("\nPart 2: b & b* [manual]")
@@ -133,9 +139,10 @@ object RegularExpressions {
 //        println("\nPart 3: a")
 //        println(res2p3.toNFA)
 //        println("\nPart 2 & Part 3")
-        val interm1 = res2p2.toNFA ++ res2p3.toNFA
+        val interm1 = res2p2.toNFA ++ res2p3.toNFA: NFA
 //        println(interm1)
 //        println("\nPart 1 + (Part 2 & Part 3)")
+        println(res2p1.toNFA.extendAlphabet(Set('a, 'b)) | interm1)
         println((res2p1.toNFA.extendAlphabet(Set('a, 'b)) | interm1).toDFA.minimize.getRenamedCopy(0))
     }
 }
