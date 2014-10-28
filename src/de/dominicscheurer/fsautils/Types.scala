@@ -21,7 +21,7 @@ package de.dominicscheurer.fsautils {
 	object Types {
 		type Letter = Symbol
 		type Word = List[Letter]
-		type NFADeltaResult = Option[Set[State]]
+		type NFADeltaResult = Set[State]
 		
 		abstract sealed class State
 		

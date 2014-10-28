@@ -73,9 +73,9 @@ package de.dominicscheurer.fsautils {
 	    // NFA
 		def deltaNFA (state: State, letter: Letter) : NFADeltaResult =
 		  (state, letter) match {
-			  case (q(0), 'a) => (q(0), q(1))
-			  case (q(0), 'b) => q(0)
-			  case _         => None
+			  case (q(0), 'a) => Set(q(0), q(1))
+			  case (q(0), 'b) => Set(q(0))
+			  case _          => Set()
 			}
 		def A_NFA = Set(q(1))                       : States
 //		
@@ -108,7 +108,7 @@ package de.dominicscheurer.fsautils {
 		  (state, letter) match {
 			  case (q(0), 'a) => q(0)
 			  case (q(0), 'b) => q(1)
-			  case _         => None
+			  case _          => Set(): Set[State]
 			}
 		
 		val myNFA2 = (alphabet, states, q0, delta_NFAOp _, A_NFA) : NFA
