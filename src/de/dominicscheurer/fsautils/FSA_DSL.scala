@@ -27,7 +27,7 @@ package de.dominicscheurer.fsautils {
 			var states   : Option[States]                                = None
 			var q0       : Option[State]                                 = None
 			var deltaF   : Option[(State, Letter) => State]              = None
-			var deltaR   : Option[(State, Letter) => Option[Set[State]]] = None
+			var deltaR   : Option[(State, Letter) => Set[State]] = None
 			var A        : Option[States]                                = None
 		    
 			// Connectors for definition: "where" and "and"
@@ -59,12 +59,12 @@ package de.dominicscheurer.fsautils {
 		        }
 		        case func: DeltaRel => input._1 match {
 		            case t._4 => {
-		                def myDelta (s: State, l: Letter): Option[Set[State]] = s match {
+		                def myDelta (s: State, l: Letter): Set[State] = s match {
 		                    case q(i) =>
 		                        if (func.fun contains(i, l))
-		                        	Some(func.fun(i, l).map(s => q(s)))
+		                        	func.fun(i, l).map(s => q(s))
 		                        else
-		                            None
+		                            Set(): Set[State]
 		                    case _    => error("Should not occur")
 		                }
 		                deltaR = Some(myDelta)

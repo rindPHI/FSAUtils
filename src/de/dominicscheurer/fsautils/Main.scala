@@ -73,9 +73,9 @@ package de.dominicscheurer.fsautils {
 	    // NFA
 		def deltaNFA (state: State, letter: Letter) : NFADeltaResult =
 		  (state, letter) match {
-			  case (q(0), 'a) => (q(0), q(1))
-			  case (q(0), 'b) => q(0)
-			  case _         => None
+			  case (q(0), 'a) => Set(q(0), q(1))
+			  case (q(0), 'b) => Set(q(0))
+			  case _          => Set()
 			}
 		def A_NFA = Set(q(1))                       : States
 //		
@@ -108,7 +108,7 @@ package de.dominicscheurer.fsautils {
 		  (state, letter) match {
 			  case (q(0), 'a) => q(0)
 			  case (q(0), 'b) => q(1)
-			  case _         => None
+			  case _          => Set(): Set[State]
 			}
 		
 		val myNFA2 = (alphabet, states, q0, delta_NFAOp _, A_NFA) : NFA
@@ -173,6 +173,12 @@ package de.dominicscheurer.fsautils {
 		
 		println("\n(DFA == NFA.toDFA): ")
 		println(myDFA == myNFA.toDFA)
+        
+        println("\n(NFA & NFA == NFA): ")
+        println((myNFA & myNFA) == myNFA)
+        
+        println("\n(NFA | NFA == NFA): ")
+        println((myNFA | myNFA) == myNFA)
 		
 		// RegExp
 		def myRegExp = (('a*) + ('b & ('b*) & 'a))* : RE
@@ -211,7 +217,15 @@ package de.dominicscheurer.fsautils {
         println(re.toNFA)
         
         println("\n(a* & b) toNFA (minimized, renamed)")
-        println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
+        println(re.toNFA.toDFA.minimize.getRenamedCopy(0))
+        
+        val re2: RE = (('a*) & ('b)) + ('b & ('b*))
+        
+        println("\n(a* & b) + (b & b*) toNFA")
+        println(re2.toNFA)
+        
+        println("\n(a* & b) + (b & b*) toNFA (minimized, renamed)")
+        println(re2.toNFA.toDFA.minimize.getRenamedCopy(0))
 		
         println("\nDFA toRegExp:")
         println(myDFA.toRegExp cleanString)
@@ -219,41 +233,9 @@ package de.dominicscheurer.fsautils {
         println("\nDFA toRegExp toNFA:")
         println(myDFA.toRegExp.toNFA)
         
-        println("\nDFA toRegExp toNFA == DFA:")
-        println(myDFA.toRegExp.toNFA == myDFA)
-        
-		// From here, experimental
-		
-//		val res = ('a*).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
-//		val res1 = ('b).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
-//		
-//		println("\n(a*) toNFA toDFA minimize (renamed)")
-//		println(res)
-//		
-//		println("\n(b) toNFA toDFA minimize (renamed)")
-//		println(res1)
-//		
-//		println("'Manual' Test:")
-//		println(res.extendAlphabet(res1.alphabet) | res1.extendAlphabet(res.alphabet))
-		
-//		println("'Manual' Test:")
-//		println((('a*).toNFA.toDFA | ('b).toNFA.toDFA).getRenamedCopy(0))
-//		
-//		println("\n(a* + b) toNFA (renamed)")
-//		println((('a*) + ('b)).toNFA.toDFA.minimize.getRenamedCopy(0))
-		
-		
-//		println(re.toNFA.getRenamedCopy(0)) // Something does not work here!
-		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
-		
-//		println("\nDFA toRegExp:")
-//		println(myDFA.toRegExp cleanString)
-//		
-//		println("\nDFA toRegExp toNFA:")
-//		println(myDFA.toRegExp.toNFA)
-//		
-//		println("\nDFA toRegExp toNFA == DFA:")
-//		println(myDFA.toRegExp.toNFA == myDFA)
+        // The following is very slow (state explosion?)
+//        println("\nDFA toRegExp toNFA (minimized DFA):")
+//        println(myDFA.toRegExp.toNFA.toDFA.minimize)
 	  }
 	}
 }

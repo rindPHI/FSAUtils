@@ -27,7 +27,7 @@ package de.dominicscheurer.fsautils {
         var alphabet: Set[Letter],
         var states: Set[State],
         var initialState: State,
-        var delta: ((State, Letter) => Option[Set[State]]),
+        var delta: ((State, Letter) => Set[State]), //Power Set instead of Relation
         var accepting: Set[State]) {
 
         require(states contains initialState)
@@ -41,13 +41,9 @@ package de.dominicscheurer.fsautils {
         def accepts(word: Word, fromState: State): Boolean = word match {
             case Nil => accepting contains fromState
             case letter :: rest =>
-                delta(fromState, letter) match {
-                    case None => false
-                    case Some(listOfStates) =>
-                        listOfStates.foldLeft(false)(
-                            (result: Boolean, possibleSuccessor: State) =>
-                                result || accepts(rest, possibleSuccessor))
-                }
+                delta(fromState, letter).foldLeft(false)(
+                    (result: Boolean, possibleSuccessor: State) =>
+                        result || accepts(rest, possibleSuccessor))
         }
         
         def extendAlphabet(newLetters: Set[Letter]): NFA = {
@@ -62,18 +58,16 @@ package de.dominicscheurer.fsautils {
                 (getRenamedCopy(1)*): NFA
             }
             
-            def deltaStar(state: State, letter: Letter): Option[Set[State]] =
-                delta(state, letter) match {
-                    case None => None
-                    case Some(setOfStates) =>
-                        Some(setOfStates ++ setOfStates.filter(accepting contains _)
-                            .foldLeft(Set(): Set[State])((_, _) => Set(initialState)))
-                }
+            def deltaStar(state: State, letter: Letter): Set[State] = {
+                val deltaRes = delta(state, letter): Set[State]
+                deltaRes ++ deltaRes.filter(accepting contains _)
+                            .foldLeft(Set(): Set[State])((_, _) => Set(initialState))
+            }
 
             if (!this accepts "") {
                 val newInitialState = q(0)
                 
-                def deltaStar2(state: State, letter: Letter): Option[Set[State]] =
+                def deltaStar2(state: State, letter: Letter): Set[State] =
                     if (state == newInitialState) {
                         deltaStar(initialState, letter)
                     } else {
@@ -97,9 +91,52 @@ package de.dominicscheurer.fsautils {
             thisR concat other
         }
 
-        def &(other: NFA): DFA = (this toDFA) & (other toDFA)
+        private def productAutomaton(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            val productStates = cartesianStateProduct(states, other.states)
 
-        def |(other: NFA): DFA = (this toDFA) | (other toDFA)
+            def productDelta(s: State, l: Letter): Set[State] = s match {
+                case pair(s1, s2) => {
+                    cartesianStateProduct(delta(s1, l), other.delta(s2, l))
+                }
+                case _ => error("Impossible case")
+            }
+
+            (alphabet, productStates, pair(initialState, other.initialState), productDelta _, Set(): Set[State])
+        }
+
+        def &(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            val intersAccepting = cartesianStateProduct(accepting, other.accepting)
+            val product = productAutomaton(other)
+
+            (alphabet, product.states, product.initialState, product.delta, intersAccepting)
+        }
+
+        def |(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            if (   !(states intersect other.states).isEmpty
+                || (states union other.states).contains(q(0)))
+                getRenamedCopy(1) | other.getRenamedCopy(states.size + 1)
+            else {
+                def newDelta(s: State, l: Letter): Set[State] =
+                    if (s == q(0))
+                        delta(initialState, l) ++ other.delta(other.initialState, l)
+                    else
+                        if (states.contains(s))
+                            delta(s, l)
+                        else
+                            other.delta(s,l)
+                
+                if ((this accepts "") || (other accepts ""))
+                    (alphabet, states ++ other.states + q(0), q(0), newDelta _, accepting ++ other.accepting + q(0))
+                else
+                    (alphabet, states ++ other.states + q(0), q(0), newDelta _, accepting ++ other.accepting)
+            }
+        }
 
         def \(other: NFA): DFA =
             (this toDFA) \ (other toDFA)
@@ -126,10 +163,8 @@ package de.dominicscheurer.fsautils {
                 (state, letter) match {
                     case (set(setOfStates), letter) =>
                         set(setOfStates.foldLeft(Set(): States)((result, q) =>
-                            delta(q, letter) match {
-                                case None => result
-                                case Some(setOfTargetStates) => result union setOfTargetStates
-                            }))
+                            result union delta(q, letter)
+                    ))
                     case _ => error("Impossible case")
                 }
 
@@ -144,12 +179,8 @@ package de.dominicscheurer.fsautils {
                 }
             val reverseRenameMap = renameMap.map(_.swap)
 
-            def deltaRen(state: State, letter: Letter): Option[Set[State]] =
-                delta(reverseRenameMap(state), letter) match {
-                    case None => None
-                    case Some(setOfStates) =>
-                        Some(setOfStates.map(s => renameMap(s)))
-                }
+            def deltaRen(state: State, letter: Letter): Set[State] =
+                delta(reverseRenameMap(state), letter).map(s => renameMap(s))
 
             (alphabet,
                 states.map(s => renameMap(s)),
@@ -166,11 +197,9 @@ package de.dominicscheurer.fsautils {
 
                 val statesCup = concatNoEps.states + q(-1)
 
-                def deltaCup(state: State, letter: Letter): Option[Set[State]] =
+                def deltaCup(state: State, letter: Letter): Set[State] =
                     if (state == q(-1))
-                        optJoin(
-                            concatNoEps.delta(initialState, letter),
-                            other.delta(other.initialState, letter))
+                        concatNoEps.delta(initialState, letter) ++ other.delta(other.initialState, letter)
                     else
                         concatNoEps.delta(state, letter)
 
@@ -180,16 +209,14 @@ package de.dominicscheurer.fsautils {
 
                 val statesCup = states ++ other.states
 
-                def deltaCup(state: State, letter: Letter): Option[Set[State]] =
+                def deltaCup(state: State, letter: Letter): Set[State] =
                     if (other.states contains state)
                         other.delta(state, letter) // Delta_2
-                    else // Delta_1 \cup Delta_{1->2}
-                        delta(state, letter) match {
-                            case None => None
-                            case Some(setOfStates) =>
-                                Some(setOfStates ++ setOfStates.filter(accepting contains _)
-                                    .foldLeft(Set(): Set[State])((_, _) => Set(other.initialState)))
-                        }
+                    else { // Delta_1 \cup Delta_{1->2}
+                        val deltaRes = delta(state, letter)
+                        deltaRes ++ deltaRes.filter(accepting contains _)
+                            .foldLeft(Set(): Set[State])((_, _) => Set(other.initialState))
+                    }
 
                 (alphabet ++ other.alphabet, statesCup, initialState, deltaCup _, other.accepting)
 
@@ -223,12 +250,10 @@ package de.dominicscheurer.fsautils {
                         ++= ","
                         ++= l.name
                         ++= ") => "
-                        ++= (delta(s, l) match {
-                            case None => "{}"
-                            case Some(setOfStates) =>
-                                setOfStates.foldLeft("")(
-                                    (result, aState) => result + aState.toString + " | ").stripSuffix(" | ")
-                        })
+                        ++= (if (delta(s, l).isEmpty) "{}"
+                            else
+                                delta(s, l).foldLeft("")(
+                                    (result, aState) => result + aState.toString + " | ").stripSuffix(" | "))
                         ++= ","))
             sb = sb.dropRight(1 - alphabet.isEmpty)
             sb ++= "\n" ++= indent ++= "}\n"
