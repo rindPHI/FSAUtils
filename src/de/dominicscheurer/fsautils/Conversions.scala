@@ -37,7 +37,7 @@ package de.dominicscheurer.fsautils {
 	      t: (Set[Letter],
 	          Set[State],
 	          State,
-	          ((State, Letter) => Option[Set[State]]),
+	          ((State, Letter) => Set[State]),
 	          Set[State])) : NFA = {
 	    new NFA(t._1, t._2, t._3, t._4, t._5)
 	  }
@@ -46,9 +46,9 @@ package de.dominicscheurer.fsautils {
 	    (dfa.alphabet, dfa.states, dfa.initialState,
 	        (state: State, letter: Letter) => {
 	            try {
-	            	Some(Set(dfa.delta(state, letter)))
+	            	Set(dfa.delta(state, letter))
 	            } catch {
-	                case _: Throwable => None
+	                case _: Throwable => Set(): Set[State]
 	            }
 	        },
 	        dfa.accepting)
