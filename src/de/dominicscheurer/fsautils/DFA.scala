@@ -147,8 +147,8 @@ package de.dominicscheurer.fsautils {
 
             val rel = (reachableStates -- reachableAccepting)
                 .foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
-                    (rel, s) => reachableAccepting.foldLeft(new AntiReflSymmRel(): AntiReflSymmRel[State])(
-                        (_, a) => rel + (s, a)))
+                    (rel, s) => rel ++ reachableAccepting.foldLeft(Set(): Set[(State,State)])(
+                        (set, a) => set + (s -> a)))
 
             val reachDFA = (alphabet, reachableStates, initialState, delta, reachableAccepting): DFA
 
