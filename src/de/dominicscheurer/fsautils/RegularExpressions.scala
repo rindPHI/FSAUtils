@@ -127,7 +127,7 @@ object RegularExpressions {
         println(res1)
 
         println("'Manual' Test:")
-        println((res | res1))
+        println((res | res1).getRenamedCopy(0))
 
         println("Minimization has an error if value below is 'false':")
         println((res | res1) == (res | res1).minimize.getRenamedCopy(0))
