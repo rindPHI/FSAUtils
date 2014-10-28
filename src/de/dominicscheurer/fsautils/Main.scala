@@ -205,24 +205,36 @@ package de.dominicscheurer.fsautils {
 		
 		// RE2NFS
 		
-		println("\n(a* & b) toNFA")
-		println((('a*) & ('b)).toNFA)
+        val re: RE = ('a*) & ('b)
+        
+        println("\n(a* & b) toNFA")
+        println(re.toNFA)
+        
+        println("\n(a* & b) toNFA (minimized, renamed)")
+        println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
 		
-		val re: RE = ('a*) & ('b)
-		
+        println("\nDFA toRegExp:")
+        println(myDFA.toRegExp cleanString)
+        
+        println("\nDFA toRegExp toNFA:")
+        println(myDFA.toRegExp.toNFA)
+        
+        println("\nDFA toRegExp toNFA == DFA:")
+        println(myDFA.toRegExp.toNFA == myDFA)
+        
 		// From here, experimental
 		
-		val res = ('a*).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
-		val res1 = ('b).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
-		
-		println("\n(a*) toNFA toDFA minimize (renamed)")
-		println(res)
-		
-		println("\n(b) toNFA toDFA minimize (renamed)")
-		println(res1)
-		
-		println("'Manual' Test:")
-		println(res.extendAlphabet(res1.alphabet) | res1.extendAlphabet(res.alphabet))
+//		val res = ('a*).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
+//		val res1 = ('b).toNFA.toDFA.minimize.getRenamedCopy(0) : DFA
+//		
+//		println("\n(a*) toNFA toDFA minimize (renamed)")
+//		println(res)
+//		
+//		println("\n(b) toNFA toDFA minimize (renamed)")
+//		println(res1)
+//		
+//		println("'Manual' Test:")
+//		println(res.extendAlphabet(res1.alphabet) | res1.extendAlphabet(res.alphabet))
 		
 //		println("'Manual' Test:")
 //		println((('a*).toNFA.toDFA | ('b).toNFA.toDFA).getRenamedCopy(0))
@@ -232,7 +244,7 @@ package de.dominicscheurer.fsautils {
 		
 		
 //		println(re.toNFA.getRenamedCopy(0)) // Something does not work here!
-//		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
+		println(re.toNFA.toDFA.minimize.getRenamedCopy(0)) // Something does not work here!
 		
 //		println("\nDFA toRegExp:")
 //		println(myDFA.toRegExp cleanString)

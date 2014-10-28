@@ -115,21 +115,27 @@ object RegularExpressions {
 
     def main(args: Array[String]) = {
         // From here, experimental
-        val res = ('a*).toNFA.extendAlphabet(Set('b)).toDFA.minimize.getRenamedCopy(0): DFA
-        val res1 = ('b).toNFA.extendAlphabet(Set('a)).toDFA.minimize.getRenamedCopy(2): DFA
-//        val res = ('a*).toNFA.toDFA: DFA
-//        val res1 = ('b).toNFA.toDFA: DFA
-
-        println("\n(a*) toNFA toDFA minimize (renamed)")
-        println(res)
-
-        println("\n(b) toNFA toDFA minimize (renamed)")
-        println(res1)
-
-        println("'Manual' Test:")
-        println((res | res1).getRenamedCopy(0))
-
-        println("Minimization has an error if value below is 'false':")
-        println((res | res1) == (res | res1).minimize.getRenamedCopy(0))
+        
+        val res2p1 = (Empty()*) + 'a: RE
+        val res2p2 = ('b & ('b*)): RE
+        val res2p3 = 'a: RE
+//        
+//        println("\nPart 1: {}* + a")
+//        println(res2p1.toNFA.toDFA.minimize.getRenamedCopy(0))
+//        println("\nPart 2: b & b*")
+//        println(res2p2.toNFA)
+//        println("\nPart 2: b & b* [manual]")
+//        println(('b.toNFA.toDFA.minimize.getRenamedCopy(0) ++ ('b*).toNFA.toDFA.minimize.getRenamedCopy(0)).minimize.getRenamedCopy(0))
+//        println("\n> b:")
+//        println('b.toNFA.toDFA.minimize.getRenamedCopy(0))
+//        println("\n> b*")
+//        println(('b*).toNFA.toDFA.minimize.getRenamedCopy(0))
+//        println("\nPart 3: a")
+//        println(res2p3.toNFA)
+//        println("\nPart 2 & Part 3")
+        val interm1 = res2p2.toNFA ++ res2p3.toNFA
+//        println(interm1)
+//        println("\nPart 1 + (Part 2 & Part 3)")
+        println((res2p1.toNFA.extendAlphabet(Set('a, 'b)) | interm1).toDFA.minimize.getRenamedCopy(0))
     }
 }
