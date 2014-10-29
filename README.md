@@ -120,6 +120,14 @@ object FSAUtilsTest extends FSA_DSL {
 }
 ```
 
+If you wish to run the included unit tests, execute
+
+```bash
+ant runTests
+```
+
+in the `FSAUtils-master` directory.
+
 Examples
 --------
 

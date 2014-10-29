@@ -19,7 +19,7 @@
 package de.dominicscheurer.fsautils {
     import Types._
     
-	class FSA_DSL {
+	trait FSA_DSL {
 		case class FSABuilder(
 		      t: (Symbol, Symbol, Symbol, Symbol, Symbol), isDFA: Boolean) {
 		    // The elements that need to be filled
