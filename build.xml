@@ -13,9 +13,15 @@
         <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar"/>
         <pathelement location="${env.SCALA_HOME}/lib/scala-actors_*.jar"/>
         <pathelement location="${env.SCALA_HOME}/lib/scala-swing_*.jar"/>
+        <pathelement location="scalatest_2.11.jar"/>
     </path>
+	
+	<target name="dl_scalatest">
+        <get src="https://oss.sonatype.org/content/groups/public/org/scalatest/scalatest_2.11/2.2.1/scalatest_2.11-2.2.1.jar" 
+             dest="scalatest_2.11.jar" skipexisting="true"/>
+	</target>
     	
-    <target name="init">
+    <target depends="dl_scalatest" name="init">
     	<mkdir dir="${build.dir}"/>
         <mkdir dir="${build-lib.dir}"/>
         <property
@@ -26,11 +32,11 @@
             <pathelement location="${build.dir}" />
         </path>
         <taskdef resource="scala/tools/ant/antlib.xml">
-        <classpath>
-            <pathelement location="${env.SCALA_HOME}/lib/scala-compiler.jar" />
-            <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar" />
-            <pathelement location="${scala-library.jar}" />
-        </classpath>
+            <classpath>
+                <pathelement location="${env.SCALA_HOME}/lib/scala-compiler.jar" />
+                <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar" />
+                <pathelement location="${scala-library.jar}" />
+            </classpath>
         </taskdef>
     </target>
 	
@@ -56,10 +62,12 @@
         <jar destfile="${build-lib.dir}/FSA_DSL.jar">
             <fileset dir="${build.dir}"/>
             <fileset dir="." includes="LICENSE"/>
+        	<zipfileset includes="**/*.class" src="scalatest_2.11.jar"/>
         </jar>
         <jar destfile="${build-lib.dir}/FSA_DSL.src.jar">
             <fileset dir="${src.dir}" includes="**/*.scala"/>
             <fileset dir="." includes="LICENSE"/>
+        	<zipfileset includes="**/*.class" src="scalatest_2.11.jar"/>
         </jar>
     </target>
 </project>
