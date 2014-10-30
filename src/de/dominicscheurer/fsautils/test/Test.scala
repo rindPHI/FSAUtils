@@ -86,20 +86,18 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
         assert((dfa1eqNFA | dfa1eqNFA) == dfa1eqNFA)
     }
 
-    it should "be stable under double negation" in {
-        var detDfa1eqNFA = dfa1eqNFA.toDFA
-        
-        assert(!dfa1eqNFA.toDFA.toString.isEmpty)
-//        assert(!(!detDfa1eqNFA) == detDfa1eqNFA)
-        
-        // -> The following version runs out of heap space
-        //    (possibly due to power set construction):
-        // assert(!(!dfa1eqNFA) == dfa1eqNFA)
-    }
+    it should "be stable under double negation" in
+         assert(!(!dfa1eqNFA) == dfa1eqNFA)
 
-    it should "be stable under Regular Expression building" in
-        assert(dfa1eqNFA.toRegExp.toNFA == dfa1eqNFA)
-
+    // The following test consumes very much memory and tends to produce
+    // OutOfMemory errors (possibly very large power set construction).
+    // The situation gets better with
+    //   dfa1eqNFA.toDFA.minimize.toRegExp.toNFA
+    // due to a shorter RE, but it is still problematic. Maybe one should go
+    // for something like RE minimization?
+//    it should "be stable under Regular Expression building" in
+//        assert(dfa1eqNFA.toRegExp.toNFA == dfa1eqNFA)
+    
     "The result of an NFA minus itself" should "be empty" in
         assert((dfa1eqNFA \ dfa1eqNFA).isEmpty)
     

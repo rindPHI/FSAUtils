@@ -20,33 +20,8 @@ package de.dominicscheurer.fsautils {
     import Types._
   
 	object Helpers {
-//		def powerSet[A](s: Set[A]) =
-//		    s.foldLeft(Set(Set.empty[A])) {
-//		      (set, element) =>
-//		        set union (set map (_ + element))
-//		    }
         
         def powerSet[A](s: Set[A]) = s.subsets.toSet
-        
-//        def powerSet[A](t: Set[A]): Set[Set[A]] = {
-//            @annotation.tailrec 
-//            def pwr(t: Set[A], ps: Set[Set[A]]): Set[Set[A]] =
-//                if (t.isEmpty) ps
-//                else pwr(t.tail, ps ++ (ps map (_ + t.head)))
-//            
-//            System.gc
-//                
-//            pwr(t, Set(Set.empty[A])) //Powerset of ∅ is {∅}
-//        }
-        
-//        def powerSet[A](s: Set[A]) = {
-//            @annotation.tailrec 
-//            def pwr(s: List[A], acc: List[List[A]]): List[List[A]] = s match {
-//                case Nil     => acc 
-//                case a :: as => pwr(as, acc ::: (acc map (a :: _)))
-//            }
-//            pwr(s.toList, Nil :: Nil)
-//        }.map(_.toSet).toSet
 		
 		def optJoin[A](a: Option[Set[A]], b: Option[Set[A]]): Option[Set[A]] =
 			a match {
