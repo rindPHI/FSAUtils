@@ -34,9 +34,6 @@ package de.dominicscheurer.fsautils {
 			    case None => None
 			  }
 			}
-		
-		def optJoin[A](a: Option[Set[A]]*) : Option[Set[A]] =
-		  a.foldLeft(None: Option[Set[A]])((acc,elem) => optJoin(acc,elem))
 		  
 		def cartesianStateProduct(a: Set[State], b: Set[State]) : Set[State] =
 	      cartesianProduct(a,b).map(p => pair(p._1, p._2))
@@ -47,10 +44,5 @@ package de.dominicscheurer.fsautils {
 	            (acc1,elem1) => acc1 + (elem -> elem1)
 	        )
 	    )
-        
-        def optSetToSet[A](s: Option[Set[A]]) = s match {
-            case None            => Set(): Set[A]
-            case Some(set_of_as) => set_of_as 
-        }
 	}
 }
