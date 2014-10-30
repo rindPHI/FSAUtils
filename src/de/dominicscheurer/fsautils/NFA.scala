@@ -151,6 +151,9 @@ package de.dominicscheurer.fsautils {
 
         def toRegExp: RE = (this toDFA) toRegExp
 
+        //TODO: This power set construction seems to be problematic
+        //      regarding memory consumption already for some automata
+        //      with only two states!?! (See Test.scala)
         def toDFA: DFA = {
             val pStates = powerSet(states).map(setOfStates => set(setOfStates)): States
             val pInitialState = set(Set(initialState)): State

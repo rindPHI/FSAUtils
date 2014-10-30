@@ -24,6 +24,8 @@ package de.dominicscheurer.fsautils {
     import Helpers._
     import RegularExpressions._
     import Relations._
+    
+    import scala.annotation.tailrec
 
     import Predef.{ any2stringadd => _, _ }
 
@@ -148,6 +150,7 @@ package de.dominicscheurer.fsautils {
             reachDFA minimize rel
         }
 
+        @tailrec
         private def minimize(rel: AntiReflSymmRel[State]): DFA = {
             val cartProd = cartesianProduct(states, states)
             val differentPairs = cartProd.filter(p => p match {

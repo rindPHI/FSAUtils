@@ -44,10 +44,13 @@
     <target name="clean">
         <delete dir="${build.dir}"/>
         <delete dir="${build-lib.dir}"/>
-    	<delete file="scalatest_2.11.jar"/>
     </target>
 	
-    <target depends="clean" name="cleanall"/>
+	<target name="cleanScalatest">
+        <delete file="scalatest_2.11.jar"/>
+	</target>
+	
+    <target depends="clean, cleanScalatest" name="cleanall"/>
 	
     <target depends="init" name="build">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -81,6 +84,7 @@
         </path>
 		
 		<java classpathref="test.classpath" classname="org.scalatest.run">
+			<jvmarg value="-XX:-UseGCOverheadLimit"/>
 			<arg value="de.dominicscheurer.fsautils.test.Test"/>
 		</java>
 	</target>
