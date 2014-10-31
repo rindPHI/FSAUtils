@@ -28,8 +28,8 @@ Features supported so far
 * Conversion of RE to NFA (i.e. also checking of equivalence of DFA/NFA with RE)
 * Minimization of DFA
 
-Get Started
------------
+Get Started (1.0 Beta Version)
+------------------------------
 
 **Prerequisites:** You need to have Scala and the JVM installed. FSAUtils
 has been tested with Scala 2.11 and Java 1.7. Furthermore, the environment
@@ -40,19 +40,19 @@ The following steps should work for a Linux system.
 1. Download the archive:
    
    ```bash
-   wget https://github.com/rindPHI/FSAUtils/archive/master.zip
+   wget https://github.com/rindPHI/FSAUtils/archive/v1.0-beta.tar.gz -O FSAUtils-1.0-beta.tar.gz
    ```
    
-2. Unzip it:
+2. Extract it:
    
    ```bash
-   unzip master.zip
+   tar xzf FSAUtils-1.0-beta.tar.gz
    ```
    
 2. Build it:
    
    ```bash
-   cd FSAUtils-master
+   cd FSAUtils-1.0-beta/
    ant
    ```
    
@@ -122,7 +122,7 @@ If you wish to run the included unit tests, execute
 ant runTests
 ```
 
-in the `FSAUtils-master` directory.
+in the `FSAUtils-1.0-beta` directory.
 
 Examples
 --------
