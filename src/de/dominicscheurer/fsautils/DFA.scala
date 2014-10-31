@@ -135,6 +135,17 @@ package de.dominicscheurer.fsautils {
                 accepting.map(s => renameMap(s)))
         }
 
+        def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
+            if (toVisit isEmpty) {
+                List()
+            } else {
+                val next = toVisit head
+                val succ = alphabet.map(l => delta(next, l)).toList diff toVisit diff visited
+
+                next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
+            }
+        }
+
         def minimize: DFA = {
             // first, remove unreachable states
             val reachableStates = states intersect (Set() ++ traverseDFS(List(initialState), List()))
@@ -209,7 +220,7 @@ package de.dominicscheurer.fsautils {
         }
 
         private def alpha(k: Int, from: State, to: State): RE =
-            if (k == 1) {
+            if (k == 0) {
                 val oneStepTransitions = alphabet
                     .filter(a => delta(from, a) == to)
                     .foldLeft(Empty(): RE)((re, a) => re + a)
@@ -230,17 +241,6 @@ package de.dominicscheurer.fsautils {
                     case _ => error("Should not happen: Call toRegExp() and not this method")
                 }
             }
-
-        def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
-            if (toVisit isEmpty) {
-                List()
-            } else {
-                val next = toVisit head
-                val succ = alphabet.map(l => delta(next, l)).toList diff toVisit diff visited
-
-                next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
-            }
-        }
 
         override def toString = {
             val indentSpace = "    "

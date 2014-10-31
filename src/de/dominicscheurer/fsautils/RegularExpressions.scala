@@ -36,6 +36,10 @@ object RegularExpressions {
 
         def toNFA: NFA = toNFAInt(alphabet, MutableMap())
         def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]): NFA
+        
+        override def hashCode: Int = toString hashCode        
+        override def equals(other: Any): Boolean =
+            other.isInstanceOf[RE] && (this.hashCode == other.hashCode)
 
         /**
          * cleanString does some post processing on the
