@@ -157,12 +157,7 @@ package de.dominicscheurer.fsautils {
         def toRegExp: RE = (this toDFA) toRegExp
 
         def toDFA: DFA = {
-            val pStates = powerSet(states).map(setOfStates => set(setOfStates)): States
             val pInitialState = set(Set(initialState)): State
-            val pAccepting = pStates.filter {
-                case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
-                case _ => error("Impossible case")
-            }
 
             def pDelta(state: State, letter: Letter) =
                 (state, letter) match {
@@ -172,7 +167,15 @@ package de.dominicscheurer.fsautils {
                     ))
                     case _ => error("Impossible case")
                 }
+            
 
+            val interm = (alphabet, Set(pInitialState), pInitialState, pDelta _, Set(pInitialState)): DFA
+            val pStates = interm.traverseDFS(List(pInitialState), List()).toSet
+            val pAccepting = pStates.filter {
+                case (set(setOfStates)) => (setOfStates intersect accepting) nonEmpty
+                case _ => error("Impossible case")
+            }
+            
             (alphabet, pStates, pInitialState, pDelta _, pAccepting)
         }
 
@@ -192,6 +195,13 @@ package de.dominicscheurer.fsautils {
                 renameMap(initialState),
                 deltaRen _,
                 accepting.map(s => renameMap(s)))
+        }
+        
+        def removeUnreachable: NFA = {
+            val reachableStates = states intersect (traverseDFS(List(initialState), List()).toSet)
+            val reachableAccepting = accepting intersect reachableStates
+
+            (alphabet, reachableStates, initialState, delta, reachableAccepting): NFA
         }
 
         private def concat(other: NFA): NFA = {
@@ -230,6 +240,19 @@ package de.dominicscheurer.fsautils {
             }
         }
 
+        private def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
+            if (toVisit isEmpty) {
+                List()
+            } else {
+                val next = toVisit head
+                val succ = alphabet.foldLeft(Set(): Set[State])(
+                               (acc, l) => acc ++ delta(next, l)
+                           ).toList diff toVisit diff visited
+
+                next :: traverseDFS(toVisit.tail ++ succ, next :: visited)
+            }
+        }
+        
         override def toString = {
             val indentSpace = "    "
             val indentBeginner = "|"

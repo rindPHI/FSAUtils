@@ -3,6 +3,7 @@ package de.dominicscheurer.fsautils.test
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import de.dominicscheurer.fsautils.FSA_DSL
+import de.dominicscheurer.fsautils.Types._
 
 class Test extends FlatSpec with Matchers with FSA_DSL {
     
@@ -101,14 +102,17 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
     // The following test consumes very much memory and tends to produce
     // OutOfMemory errors (possibly very large power set construction).
     // The situation gets better with
-    //   dfa1eqNFA.toDFA.minimize.toRegExp.toNFA
+    //   dfa1eqNFA.toDFA.minimize.toRegExp.clean.toNFA
     // due to a shorter RE, but it is still problematic. Maybe one should go
     // for something like RE minimization?
-//    it should "be stable under Regular Expression building" in
-//        assert(dfa1eqNFA.toRegExp.clean.toNFA == dfa1eqNFA)
+    it should "be stable under Regular Expression building" in
+        assert(dfa1eqNFA.toDFA.minimize.toRegExp.toNFA.removeUnreachable == dfa1eqNFA)
+    
+    it should "be stable under Regular Expression building 2" in
+        assert(dfa1eqNFA.toRegExp.toNFA.toDFA == dfa1eqNFA.toDFA)
     
 //    println(dfa1eqNFA.toRegExp)
-//    println(dfa1eqNFA.toRegExp.clean.toNFA.toDFA)
+//    println(dfa1eqNFA.toDFA.minimize.toRegExp.clean.toNFA.removeUnreachable.getRenamedCopy(0).toDFA)
     
     "The result of an NFA minus itself" should "be empty" in
         assert((dfa1eqNFA \ dfa1eqNFA).isEmpty)

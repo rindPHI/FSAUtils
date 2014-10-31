@@ -231,7 +231,7 @@ package de.dominicscheurer.fsautils {
                 }
             }
 
-        private def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
+        def traverseDFS(toVisit: List[State], visited: List[State]): List[State] = {
             if (toVisit isEmpty) {
                 List()
             } else {
