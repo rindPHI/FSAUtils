@@ -25,12 +25,8 @@ Features supported so far
 * Implicit conversion of DFA to NFA
 * Pretty-printing toString methods for DFA/NFA
 * Determination of the language (RE) of a DFA/NFA
+* Conversion of RE to NFA (i.e. also checking of equivalence of DFA/NFA with RE)
 * Minimization of DFA
-
-Planned Features
-----------------
-
-* Checking for equivalence of DFA/NFA with RE (i.e., RE to DFA)
 
 Get Started
 -----------
@@ -131,8 +127,7 @@ in the `FSAUtils-master` directory.
 Examples
 --------
 
-Please consider the files Main.scala and FSA_DSL_Test.scala to see some
-working applied examples.
+Please consider the file Test.scala to see some working applied examples.
 
 ### Creation of a DFA
 
