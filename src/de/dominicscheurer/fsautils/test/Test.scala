@@ -73,7 +73,7 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
                       (2, 'a) -> Set(2)
                 )||
                 
-//               a                a
+//           a                a
 //         __..._          _,.....              ____
 //        /'     \        /'      `|      a,b ,'   '`.
 //       /'      /        |       ,|          /      |
