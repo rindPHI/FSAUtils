@@ -22,6 +22,10 @@ import Types._
 import Conversions._
 
 object RegularExpressions {
+    type MutableMap[A,B] = scala.collection.mutable.Map[A,B]
+    type Map[A,B] = scala.collection.immutable.Map[A,B]
+    def MutableMap[A,B]() : MutableMap[A,B] = collection.mutable.Map[A,B]()
+
     sealed abstract class RE extends FSA_DSL {
         def *(): RE = Star(this)
         def +(rhs: RE): RE = Or(this, rhs)
@@ -29,8 +33,8 @@ object RegularExpressions {
 
         def alphabet: Set[Letter]
 
-        def toNFA: NFA = toNFAInt(alphabet)
-        def toNFAInt(alph: Set[Letter]): NFA
+        def toNFA: NFA = toNFAInt(alphabet, MutableMap())
+        def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]): NFA
 
         /**
          * cleanString does some post processing on the
@@ -50,7 +54,7 @@ object RegularExpressions {
             }
         }
 
-        private def clean(s: String) = s
+        private def clean(s: String): String = s
             .replace("{} + ", "")
             .replace("({})*", "\u025B") // epsilon
             .replace("{}", "\u00D8") // emptyset
@@ -166,36 +170,41 @@ object RegularExpressions {
     case class L(l: Letter) extends RE {
         override def toString = l toString
         override def alphabet = Set(l)
-        override def toNFAInt(alph: Set[Letter]) =
-            nfa('Z, 'S, 'q0, 'd, 'A) where
-                'Z ==> alph and
-                'S ==> Set(0, 1) and
-                'q0 ==> 0 and
-                'A ==> Set(1) and
+        override def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]) = {
+            val genNFA = nfa('Z, 'S, 'q0, 'd, 'A) where
+                'Z ==> alph                       and
+                'S ==> Set(0, 1)                  and
+                'q0 ==> 0                         and
+                'A ==> Set(1)                     and
                 'd ==> Delta(
-                    (0, l) -> Set(1))||
+                    (0, l) -> Set(1))             ||
+            
+            cache += (this -> genNFA)
+            genNFA
+        }
     }
 
     case class Empty() extends RE {
         override def toString = "{}"
         override def alphabet = Set()
-        override def toNFAInt(alph: Set[Letter]) = {
+        override def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]) = {
             val emptyAcc: Set[Int] = Set()
-            val emptyMap: Map[(Int, Letter), Set[Int]] = Map()
-            nfa('Z, 'S, 'q0, 'd, 'A) where
-                'Z ==> alph          and
-                'S ==> Set(0)        and
-                'q0 ==> 0            and
-                'A ==> emptyAcc      and
-                'd ==> DeltaRel(
-                    emptyMap)        ||
+            val genNFA = nfa('Z, 'S, 'q0, 'd, 'A) where
+                'Z ==> alph                       and
+                'S ==> Set(0)                     and
+                'q0 ==> 0                         and
+                'A ==> emptyAcc                   and
+                'd ==> DeltaRel(Map())            ||
+                
+            cache += (this -> genNFA)
+            genNFA
         }
     }
 
     case class Star(re: RE) extends RE {
         override def toString = "(" + re.toString + ")*"
         override def alphabet = re.alphabet
-        override def toNFAInt(alph: Set[Letter]) =
+        override def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]) =
             if (re equals Empty())
                 nfa('Z, 'S, 'q0, 'd, 'A)   where
                     'Z ==> alph            and
@@ -203,19 +212,46 @@ object RegularExpressions {
                     'q0 ==> 0              and
                     'A ==> Set(0)          and
                     'd ==> DeltaRel(Map()) ||
-            else
-                (re toNFAInt alph)*
+            else {
+                cache get this match {
+                    case None => {
+                        val genNFA = (re toNFAInt (alph, cache))*
+                        
+                        cache += (this -> genNFA)
+                        genNFA
+                    }
+                    case Some(nfa) => nfa
+                }
+            }
     }
 
     case class Or(lhs: RE, rhs: RE) extends RE {
         override def toString = "(" + lhs.toString + " + " + rhs.toString + ")"
         override def alphabet = lhs.alphabet ++ rhs.alphabet
-        override def toNFAInt(alph: Set[Letter]) = ((lhs toNFAInt alph) | (rhs toNFAInt alph)): NFA
+        override def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]) = 
+            cache get this match {
+                case None => {
+                    val genNFA = ((lhs toNFAInt (alph, cache)) | (rhs toNFAInt (alph, cache))): NFA
+            
+                    cache += (this -> genNFA)
+                    genNFA
+                }
+                case Some(nfa) => nfa
+            }
     }
 
     case class Concat(lhs: RE, rhs: RE) extends RE {
         override def toString = "(" + lhs.toString + " & " + rhs.toString + ")"
         override def alphabet = lhs.alphabet ++ rhs.alphabet
-        override def toNFAInt(alph: Set[Letter]) = ((lhs toNFAInt alph) ++ (rhs toNFAInt alph)): NFA
+        override def toNFAInt(alph: Set[Letter], cache: MutableMap[RE, NFA]) = 
+            cache get this match {
+                case None => {
+                    val genNFA = ((lhs toNFAInt (alph, cache)) ++ (rhs toNFAInt (alph, cache))): NFA
+                
+                    cache += (this -> genNFA)
+                    genNFA
+                }
+                case Some(nfa) => nfa
+            }
     }
 }
