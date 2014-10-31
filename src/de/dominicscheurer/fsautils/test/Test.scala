@@ -3,8 +3,28 @@ package de.dominicscheurer.fsautils.test
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import de.dominicscheurer.fsautils.FSA_DSL
+import de.dominicscheurer.fsautils.Types._
 
 class Test extends FlatSpec with Matchers with FSA_DSL {
+    
+//                                                      ,..._
+//     ,-'''-.            ,-----.             ,-'''-. ,'     `.
+//    /       `.    b    / /   \ `.    b     /       `.       | a,b
+//    |   2    |-------->||  4  | |--------->|   6    |       |
+//    `.      /          `.`._,' /           `.      /.<-:_,_/
+//      `...-'             `...-'`. a       /\ `...-'  
+//       /|\                       `._    ,'     |
+//        |a                          `.,'       | b
+//        |                           ,'`.       |
+//       \|/                        ,'b   `.     |
+//     ,-'''-.             ,-----. -        `v,-;--..
+//    /       `.    b     /,'   `.`.    a    / /    `:.
+//--->|   1    |--------->||  3  | |-------->||  5   ||
+//    `.      /           `\_   ,'/          `.\    //_,
+//      `...-'              `----'             `:,-' '|.
+//                                              |     ` \
+//                                               \      | a
+//                                                `" ../
     
     val dfa1 =
             dfa ('Z, 'S, 'q0, 'd, 'A)         where
@@ -26,6 +46,20 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
                       (6, 'a) -> 6,
                       (6, 'b) -> 6
                 )|
+         
+//                                     
+//        ,---.                 ,-;===:-.
+//      ,'     `.              /,'     `.\
+//     .'       '.      b     .:'       ':.
+//---->|    1    |----------->||    2    ||
+//      \       /              \\       //
+//       `.._,,'                `:.._,,;'
+//        ,'  /'`.              _/---'''/\
+//       |      `.             .'        |
+//       `       |             |.        |
+//        `-...,'               ` -__   ,'
+//          a                       '`''
+//                                  a
                 
     val dfa1eqNFA =
             nfa ('Z, 'S, 'q0, 'd, 'A) where
@@ -38,6 +72,18 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
                       (1, 'b) -> Set(2),
                       (2, 'a) -> Set(2)
                 )||
+                
+//               a                a
+//         __..._          _,.....              ____
+//        /'     \        /'      `|      a,b ,'   '`.
+//       /'      /        |       ,|          /      |
+//        ..  `,/,.        ' .  `.i_          L_   |__
+//         ,-''-:_           ,-ii-._           ,-''-._
+//       .'       \   b    .','  `-.\    b   .'       \
+// ----->|   1    |------->|/  2   '.------->|    3   |
+//       \        /        \\      //        \        /
+//        `._  _,'          `:._,,;'          `._  _,'
+//           `'                `'                `'
                 
     val dfa1eqMinDFA =
             dfa ('Z, 'S, 'q0, 'd, 'A)         where
@@ -56,8 +102,10 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
           
     /////// DFA ///////
                 
-    "A DFA" should "equal its expected minimization" in
+    "A DFA" should "equal its expected minimization" in {
+        assert(dfa1.minimize == dfa1)
         assert(dfa1.minimize == dfa1eqMinDFA)
+    }
                 
     it should "equal the equivalent NFA" in
         assert(dfa1 == dfa1eqNFA)
@@ -70,14 +118,9 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
     it should "be stable under double negation" in
         assert(!(!dfa1) == dfa1)
     
-    // The following test consumes very much memory and tends to produce
-    // OutOfMemory errors (possibly very large power set construction).
-    // The situation gets better with
-    //   dfa1.minimize.toRegExp.toNFA
-    // due to a shorter RE, but it is still problematic. Maybe one should go
-    // for something like RE minimization?
-//    it should "be stable under Regular Expression building" in
-//        assert(dfa1.toRegExp.toNFA == dfa1)
+    // This may take a while:
+    it should "be stable under Regular Expression building" in
+        assert(dfa1.toRegExp.toNFA == dfa1)
 
     "The result of a DFA minus itself" should "be empty" in
         assert((dfa1 \ dfa1).isEmpty)
@@ -98,19 +141,20 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
     it should "be stable under double negation" in
          assert(!(!dfa1eqNFA) == dfa1eqNFA)
 
-    // The following test consumes very much memory and tends to produce
-    // OutOfMemory errors (possibly very large power set construction).
-    // The situation gets better with
-    //   dfa1eqNFA.toDFA.minimize.toRegExp.toNFA
-    // due to a shorter RE, but it is still problematic. Maybe one should go
-    // for something like RE minimization?
-//    it should "be stable under Regular Expression building" in
-//        assert(dfa1eqNFA.toRegExp.clean.toNFA == dfa1eqNFA)
-    
-//    println(dfa1eqNFA.toRegExp)
-    println(dfa1eqNFA.toRegExp.clean.toNFA)
+    it should "be stable under Regular Expression building" in
+        assert(dfa1eqNFA.toRegExp.toNFA == dfa1eqNFA)
     
     "The result of an NFA minus itself" should "be empty" in
         assert((dfa1eqNFA \ dfa1eqNFA).isEmpty)
+
+    "The cut of an NFA with its star" should "be the NFA again" in
+        assert((dfa1eqNFA & (dfa1eqNFA*)) == dfa1eqNFA)
+
+    "RegExp operations" should "behave according to the corresponding automaton operations" in {
+        val re = dfa1eqNFA.toRegExp
+        assert((re & re).toNFA == (dfa1eqNFA ++ dfa1eqNFA))
+        assert((re + re).toNFA == (dfa1eqNFA | dfa1eqNFA))
+        assert((re*).toNFA     == (dfa1eqNFA*))
+    }
     
 }
