@@ -69,6 +69,15 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
 
     it should "be stable under double negation" in
         assert(!(!dfa1) == dfa1)
+    
+    // The following test consumes very much memory and tends to produce
+    // OutOfMemory errors (possibly very large power set construction).
+    // The situation gets better with
+    //   dfa1.minimize.toRegExp.toNFA
+    // due to a shorter RE, but it is still problematic. Maybe one should go
+    // for something like RE minimization?
+//    it should "be stable under Regular Expression building" in
+//        assert(dfa1.toRegExp.toNFA == dfa1)
 
     "The result of a DFA minus itself" should "be empty" in
         assert((dfa1 \ dfa1).isEmpty)
@@ -96,7 +105,10 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
     // due to a shorter RE, but it is still problematic. Maybe one should go
     // for something like RE minimization?
 //    it should "be stable under Regular Expression building" in
-//        assert(dfa1eqNFA.toRegExp.toNFA == dfa1eqNFA)
+//        assert(dfa1eqNFA.toRegExp.clean.toNFA == dfa1eqNFA)
+    
+//    println(dfa1eqNFA.toRegExp)
+    println(dfa1eqNFA.toRegExp.clean.toNFA)
     
     "The result of an NFA minus itself" should "be empty" in
         assert((dfa1eqNFA \ dfa1eqNFA).isEmpty)
