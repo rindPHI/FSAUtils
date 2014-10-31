@@ -108,7 +108,7 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
 //        assert(dfa1eqNFA.toRegExp.clean.toNFA == dfa1eqNFA)
     
 //    println(dfa1eqNFA.toRegExp)
-    println(dfa1eqNFA.toRegExp.clean.toNFA)
+//    println(dfa1eqNFA.toRegExp.clean.toNFA.toDFA)
     
     "The result of an NFA minus itself" should "be empty" in
         assert((dfa1eqNFA \ dfa1eqNFA).isEmpty)

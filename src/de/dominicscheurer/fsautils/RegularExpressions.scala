@@ -22,11 +22,12 @@ import Types._
 import Conversions._
 
 object RegularExpressions {
-    type MutableMap[A,B] = scala.collection.mutable.Map[A,B]
-    type Map[A,B] = scala.collection.immutable.Map[A,B]
-    def MutableMap[A,B]() : MutableMap[A,B] = collection.mutable.Map[A,B]()
 
     sealed abstract class RE extends FSA_DSL {
+        type MutableMap[A,B] = scala.collection.mutable.Map[A,B]
+        type Map[A,B] = scala.collection.immutable.Map[A,B]
+        def MutableMap[A,B]() : MutableMap[A,B] = collection.mutable.Map[A,B]()
+        
         def *(): RE = Star(this)
         def +(rhs: RE): RE = Or(this, rhs)
         def &(rhs: RE): RE = Concat(this, rhs)

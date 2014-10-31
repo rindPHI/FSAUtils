@@ -33,6 +33,9 @@ package de.dominicscheurer.fsautils {
         require(states contains initialState)
         require(accepting subsetOf states)
 
+        def acceptsEmptyWord: Boolean =
+            accepting contains initialState // There are no epsilon-translations
+        
         def accepts(word: String): Boolean =
             accepts(for (x <- word.toList) yield Symbol(x toString))
 
@@ -54,17 +57,19 @@ package de.dominicscheurer.fsautils {
 
         def * : NFA = {
         	// Avoid name clash for case where new start state has to be added
-            if ((!this accepts "") && states.contains(q(0))) {
+            if (!(this acceptsEmptyWord) && states.contains(q(0))) {
                 (getRenamedCopy(1)*): NFA
             }
             
             def deltaStar(state: State, letter: Letter): Set[State] = {
                 val deltaRes = delta(state, letter): Set[State]
-                deltaRes ++ deltaRes.filter(accepting contains _)
-                            .foldLeft(Set(): Set[State])((_, _) => Set(initialState))
+                if (deltaRes exists ( accepting contains _ ))
+                    deltaRes + initialState
+                else
+                    deltaRes
             }
 
-            if (!this accepts "") {
+            if (!(this acceptsEmptyWord)) {
                 val newInitialState = q(0)
                 
                 def deltaStar2(state: State, letter: Letter): Set[State] =
@@ -131,7 +136,7 @@ package de.dominicscheurer.fsautils {
                         else
                             other.delta(s,l)
                 
-                if ((this accepts "") || (other accepts ""))
+                if ((this acceptsEmptyWord) || (other acceptsEmptyWord))
                     (alphabet, states ++ other.states + q(0), q(0), newDelta _, accepting ++ other.accepting + q(0))
                 else
                     (alphabet, states ++ other.states + q(0), q(0), newDelta _, accepting ++ other.accepting)
@@ -190,7 +195,7 @@ package de.dominicscheurer.fsautils {
         }
 
         private def concat(other: NFA): NFA = {
-            if (this accepts "") {
+            if (this acceptsEmptyWord) {
 
                 val noEpsAccepting = accepting - initialState
                 val concatNoEps = ((alphabet, states, initialState, delta, noEpsAccepting): NFA) concat other
@@ -214,9 +219,11 @@ package de.dominicscheurer.fsautils {
                         other.delta(state, letter) // Delta_2
                     else { // Delta_1 \cup Delta_{1->2}
                         val deltaRes = delta(state, letter)
-                        deltaRes ++ deltaRes.filter(accepting contains _)
-                            .foldLeft(Set(): Set[State])((_, _) => Set(other.initialState))
-                    }
+                        if (deltaRes exists ( accepting contains _ ))
+                            deltaRes + other.initialState
+                        else
+                            deltaRes
+                            }
 
                 (alphabet ++ other.alphabet, statesCup, initialState, deltaCup _, other.accepting)
 
