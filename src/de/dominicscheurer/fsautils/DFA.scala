@@ -25,8 +25,6 @@ package de.dominicscheurer.fsautils {
     import RegularExpressions._
     import Relations._
     
-    import de.dominicscheurer.fsautils.serialization.Serialization
-    
     import scala.annotation.tailrec
     import scala.xml.Node
     
