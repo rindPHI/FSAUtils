@@ -28,10 +28,7 @@ package de.dominicscheurer.fsautils {
     import de.dominicscheurer.fsautils.serialization.Serialization
     
     import scala.annotation.tailrec
-    
-    import com.thoughtworks.xstream.XStream
-    import com.thoughtworks.xstream.io.xml.DomDriver
-    import net.mixedbits.tools.XStreamConversions
+    import scala.xml.Node
     
     import Predef.{ any2stringadd => _, _ }
 
@@ -284,6 +281,12 @@ package de.dominicscheurer.fsautils {
         }
         
         def toXml = {
+            val renamed = getRenamedCopy(0)
+            val alphabet = renamed.alphabet
+            val states = renamed.states
+            val initialState = renamed.initialState
+            val delta = renamed.delta
+            val accepting = renamed.accepting
 <dfa>
 	<alphabet>
         {alphabet.map { letter => <letter>{letter.toString.replaceFirst("'", "")}</letter> }}
@@ -305,10 +308,69 @@ package de.dominicscheurer.fsautils {
         }
     }
     
-//    object DFA {
-//        def fromXml(xml: String): DFA = {
-//            val xstream = XStreamConversions(new XStream(new DomDriver()))
-//            xstream.fromXML(xml).asInstanceOf[DFA]
-//        }
-//    }
+    object DFA {
+        def fromXml(node: Node): DFA = {
+            /*
+<dfa>
+    <alphabet>
+        <letter>a</letter>
+        <letter>b</letter>
+    </alphabet>
+    <states>
+        <state>1</state>
+        <state>3</state>
+        <state>5</state>
+        <state>6</state>
+        <state>4</state>
+        <state>2</state>
+    </states>
+    <initialState>1</initialState>
+    <delta>
+        <transition from="1" trigger="b" to="3"/>
+        <transition from="3" trigger="b" to="6"/>
+        <transition from="6" trigger="b" to="6"/>
+        <transition from="6" trigger="a" to="6"/>
+        <transition from="1" trigger="a" to="2"/>
+        <transition from="4" trigger="a" to="5"/>
+        <transition from="2" trigger="a" to="1"/>
+        <transition from="5" trigger="a" to="5"/>
+        <transition from="2" trigger="b" to="4"/>
+        <transition from="3" trigger="a" to="5"/>
+        <transition from="4" trigger="b" to="6"/>
+        <transition from="5" trigger="b" to="6"/>
+    </delta>
+    <accepting>
+        <state>3</state>
+        <state>4</state>
+        <state>5</state>
+    </accepting>
+</dfa>
+             */
+            val alphabet = (node \ "alphabet" \ "letter") map {
+                lNode => Symbol(lNode.text)
+            }: Seq[Letter]
+            
+            val states = (node \ "states" \ "state") map {
+                sNode => q(sNode.text.toInt)
+            }: Seq[State]
+            
+            val initialState = q((node \ "initialState").text.toInt): State
+            
+            def delta(state: State, letter: Letter): State = {
+                val transitions = (node \ "delta" \ "transition").foldLeft(Map[(State,Letter), State]())(
+                    (map: Map[(State,Letter), State], elem: scala.xml.Node) =>
+                            map + (
+                                    (q((elem \ "@from").text.toInt), Symbol((elem \ "@trigger").text)) ->
+                                        q((elem \ "@to").text.toInt))): Map[(State,Letter), State]
+                
+                transitions(state, letter)
+            }
+            
+            val accepting = (node \ "accepting" \ "state") map {
+                sNode => q(sNode.text.toInt)
+            }: Seq[State]
+            
+            new DFA(alphabet.toSet, states.toSet, initialState, delta _, accepting.toSet)
+        }
+    }
 }

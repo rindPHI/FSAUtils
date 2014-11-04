@@ -20,29 +20,21 @@
         <get src="https://oss.sonatype.org/content/groups/public/org/scalatest/scalatest_2.11/2.2.1/scalatest_2.11-2.2.1.jar" 
              dest="scalatest_2.11.jar" skipexisting="true"/>
 	</target>
-    
-    <target name="dl_xstream">
-        <get src="https://nexus.codehaus.org/content/repositories/releases/com/thoughtworks/xstream/xstream/1.4.7/xstream-1.4.7.jar" 
-             dest="xstream-1.4.7.jar" skipexisting="true"/>
-    </target>
-    
-    <target name="dl_jettison">
-        <get src="http://repo1.maven.org/maven2/org/codehaus/jettison/jettison/1.3.3/jettison-1.3.3.jar" 
-             dest="jettison-1.3.3.jar" skipexisting="true"/>
-    </target>
     	
-    <target depends="dl_scalatest, dl_xstream, dl_jettison" name="init">
+    <target depends="dl_scalatest" name="init">
     	<mkdir dir="${build.dir}"/>
         <mkdir dir="${build-lib.dir}"/>
         <property
             name="scala-library.jar"
             value="${env.SCALA_HOME}/lib/scala-library.jar" />
+        <property
+            name="scala-xml.jar"
+            value="${env.SCALA_HOME}/lib/scala-xml_2.11-1.0.2.jar" />
         <path id="build.classpath">
             <pathelement location="${scala-library.jar}" />
+            <pathelement location="${scala-xml.jar}" />
             <pathelement location="${build.dir}" />
             <pathelement location="scalatest_2.11.jar"/>
-            <pathelement location="xstream-1.4.7.jar"/>
-            <pathelement location="jettison-1.3.3.jar"/>
         </path>
         <taskdef resource="scala/tools/ant/antlib.xml">
             <classpath>
@@ -60,8 +52,6 @@
 	
 	<target name="cleanDownloads">
         <delete file="scalatest_2.11.jar"/>
-        <delete file="xstream-1.4.7.jar"/>
-        <delete file="jettison-1.3.3.jar"/>
 	</target>
 	
     <target depends="clean, cleanDownloads" name="cleanall"/>
@@ -80,8 +70,6 @@
             <fileset dir="${build.dir}"/>
             <fileset dir="." includes="LICENSE"/>
         	<zipfileset includes="**/*.class" src="scalatest_2.11.jar"/>
-            <zipfileset includes="**/*.class" src="xstream-1.4.7.jar"/>
-            <zipfileset includes="**/*.class" src="jettison-1.3.3.jar"/>
         </jar>
         <jar destfile="${build-lib.dir}/FSAUtils.src.jar">
             <fileset dir="${src.dir}" includes="**/*.scala"/>
