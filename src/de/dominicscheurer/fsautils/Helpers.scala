@@ -38,9 +38,9 @@ package de.dominicscheurer.fsautils {
 		def cartesianStateProduct(a: Set[State], b: Set[State]) : Set[State] =
 	      cartesianProduct(a,b).map(p => pair(p._1, p._2))
 	    
-	    def cartesianProduct[A](a: Set[A], b: Set[A]) : Set[(A,A)] =
-		  a.foldLeft(Set(): Set[(A,A)])(
-	        (acc,elem) => acc ++ b.foldLeft(Set(): Set[(A,A)])(
+	    def cartesianProduct[A,B](a: Set[A], b: Set[B]) : Set[(A,B)] =
+		  a.foldLeft(Set(): Set[(A,B)])(
+	        (acc,elem) => acc ++ b.foldLeft(Set(): Set[(A,B)])(
 	            (acc1,elem1) => acc1 + (elem -> elem1)
 	        )
 	    )

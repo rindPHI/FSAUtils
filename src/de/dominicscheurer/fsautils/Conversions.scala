@@ -52,20 +52,6 @@ package de.dominicscheurer.fsautils {
 
         // The following could be dangerous for short
         // regular expressions (conflicting implicits):
-        implicit def OptionSetFromStates(
-            state: State): Option[Set[State]] =
-            Some(Set(state))
-
-        implicit def OptionSetFromStates(
-            states: (State, State)) =
-            Some(Set(states._1, states._2))
-
-        implicit def OptionSetFromStates(
-            states: (State, State, State)) =
-            Some(Set(states._1, states._2, states._3))
-
-        // The following could be dangerous for short
-        // regular expressions (conflicting implicits):
         implicit def SetFromStates(
             state: State): Set[State] =
             Set(state)

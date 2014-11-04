@@ -24,6 +24,9 @@ package de.dominicscheurer.fsautils {
     import Helpers._
     import RegularExpressions._
     import Relations._
+    
+    import de.dominicscheurer.fsautils.serialization.Serialization
+    
     import scala.annotation.tailrec
     
     import com.thoughtworks.xstream.XStream
@@ -280,16 +283,32 @@ package de.dominicscheurer.fsautils {
             sb toString
         }
         
-        def toXml: String = {
-            val xstream = XStreamConversions(new XStream(new DomDriver()))
-            xstream.toXML(this)
+        def toXml = {
+<dfa>
+	<alphabet>
+        {alphabet.map { letter => <letter>{letter.toString.replaceFirst("'", "")}</letter> }}
+    </alphabet>
+	<states>
+        {states.map { state => <state>{state.toString}</state> }}
+	</states>
+	<initialState>{initialState}</initialState>
+	<delta>
+        {cartesianProduct(states,alphabet).map({
+                case (s,l) =>
+                    <transition from={s.toString} trigger={l.name} to={delta(s,l).toString} />
+        })}
+    </delta>
+	<accepting>
+		{accepting.map { state => <state>{state.toString}</state> }}
+	</accepting>
+</dfa>
         }
     }
     
-    object DFA {
-        def fromXml(xml: String): DFA = {
-            val xstream = XStreamConversions(new XStream(new DomDriver()))
-            xstream.fromXML(xml).asInstanceOf[DFA]
-        }
-    }
+//    object DFA {
+//        def fromXml(xml: String): DFA = {
+//            val xstream = XStreamConversions(new XStream(new DomDriver()))
+//            xstream.fromXML(xml).asInstanceOf[DFA]
+//        }
+//    }
 }
