@@ -24,9 +24,12 @@ package de.dominicscheurer.fsautils {
     import Helpers._
     import RegularExpressions._
     import Relations._
-    
     import scala.annotation.tailrec
-
+    
+    import com.thoughtworks.xstream.XStream
+    import com.thoughtworks.xstream.io.xml.DomDriver
+    import net.mixedbits.tools.XStreamConversions
+    
     import Predef.{ any2stringadd => _, _ }
 
     class DFA(
@@ -275,6 +278,11 @@ package de.dominicscheurer.fsautils {
             sb ++= "\n" ++= indent ++= "}\n"
 
             sb toString
+        }
+        
+        def toXml: String = {
+            val xstream = XStreamConversions(new XStream(new DomDriver()))
+            xstream.toXML(this)
         }
     }
 }

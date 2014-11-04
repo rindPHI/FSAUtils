@@ -118,6 +118,8 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
                       (3, 'a) -> 3,
                       (3, 'b) -> 3
                 )|
+                
+    println(dfa1.toXml)
           
     /////// DFA ///////
                 
