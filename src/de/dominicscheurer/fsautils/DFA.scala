@@ -285,4 +285,11 @@ package de.dominicscheurer.fsautils {
             xstream.toXML(this)
         }
     }
+    
+    object DFA {
+        def fromXml(xml: String): DFA = {
+            val xstream = XStreamConversions(new XStream(new DomDriver()))
+            xstream.fromXML(xml).asInstanceOf[DFA]
+        }
+    }
 }
