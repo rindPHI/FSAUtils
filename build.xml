@@ -57,19 +57,17 @@
     	
     	<scalac srcdir="${src.dir}" destdir="${build.dir}" force="changed" classpathref="build.classpath">
     	    <include name="**/*.scala"/>
-    		<exclude name="**/Main.scala"/>
-    		<exclude name="**/FSA_DSL_Test.scala"/>
     		<src><pathelement location="${src.dir}"/></src>
     	</scalac>
     </target>
 	
     <target name="package" depends="build">
-        <jar destfile="${build-lib.dir}/FSA_DSL.jar">
+        <jar destfile="${build-lib.dir}/FSAUtils.jar">
             <fileset dir="${build.dir}"/>
             <fileset dir="." includes="LICENSE"/>
         	<zipfileset includes="**/*.class" src="scalatest_2.11.jar"/>
         </jar>
-        <jar destfile="${build-lib.dir}/FSA_DSL.src.jar">
+        <jar destfile="${build-lib.dir}/FSAUtils.src.jar">
             <fileset dir="${src.dir}" includes="**/*.scala"/>
             <fileset dir="." includes="LICENSE"/>
         </jar>
