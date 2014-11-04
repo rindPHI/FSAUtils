@@ -20,8 +20,13 @@
         <get src="https://oss.sonatype.org/content/groups/public/org/scalatest/scalatest_2.11/2.2.1/scalatest_2.11-2.2.1.jar" 
              dest="scalatest_2.11.jar" skipexisting="true"/>
 	</target>
+    
+    <target name="dl_xstream">
+        <get src="https://nexus.codehaus.org/content/repositories/releases/com/thoughtworks/xstream/xstream/1.4.7/xstream-1.4.7.jar" 
+             dest="xstream-1.4.7.jar" skipexisting="true"/>
+    </target>
     	
-    <target depends="dl_scalatest" name="init">
+    <target depends="dl_scalatest, dl_xstream" name="init">
     	<mkdir dir="${build.dir}"/>
         <mkdir dir="${build-lib.dir}"/>
         <property
@@ -31,6 +36,7 @@
             <pathelement location="${scala-library.jar}" />
             <pathelement location="${build.dir}" />
             <pathelement location="scalatest_2.11.jar"/>
+            <pathelement location="xstream-1.4.7.jar"/>
         </path>
         <taskdef resource="scala/tools/ant/antlib.xml">
             <classpath>
@@ -46,11 +52,12 @@
         <delete dir="${build-lib.dir}"/>
     </target>
 	
-	<target name="cleanScalatest">
+	<target name="cleanDownloads">
         <delete file="scalatest_2.11.jar"/>
+        <delete file="xstream-1.4.7.jar"/>
 	</target>
 	
-    <target depends="clean, cleanScalatest" name="cleanall"/>
+    <target depends="clean, cleanDownloads" name="cleanall"/>
 	
     <target depends="init" name="build">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -66,6 +73,7 @@
             <fileset dir="${build.dir}"/>
             <fileset dir="." includes="LICENSE"/>
         	<zipfileset includes="**/*.class" src="scalatest_2.11.jar"/>
+            <zipfileset includes="**/*.class" src="xstream-1.4.7.jar"/>
         </jar>
         <jar destfile="${build-lib.dir}/FSAUtils.src.jar">
             <fileset dir="${src.dir}" includes="**/*.scala"/>
