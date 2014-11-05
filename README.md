@@ -27,6 +27,7 @@ Features supported so far
 * Determination of the language (RE) of a DFA/NFA
 * Conversion of RE to NFA (i.e. also checking of equivalence of DFA/NFA with RE)
 * Minimization of DFA
+* (De-)Serialization to and from XML
 
 Get Started (1.0 Beta Version)
 ------------------------------
