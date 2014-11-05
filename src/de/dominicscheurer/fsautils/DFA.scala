@@ -26,7 +26,8 @@ package de.dominicscheurer.fsautils {
     import Relations._
     
     import scala.annotation.tailrec
-
+    import scala.xml.Node
+    
     import Predef.{ any2stringadd => _, _ }
 
     class DFA(
@@ -275,6 +276,109 @@ package de.dominicscheurer.fsautils {
             sb ++= "\n" ++= indent ++= "}\n"
 
             sb toString
+        }
+        
+        def toXml = {
+            val renamed = getRenamedCopy(0)
+            val alphabet = renamed.alphabet
+            val states = renamed.states
+            val initialState = renamed.initialState
+            val delta = renamed.delta
+            val accepting = renamed.accepting
+<dfa>
+	<alphabet>
+        {alphabet.map { letter => <letter>{letter.toString.replaceFirst("'", "")}</letter> }}
+    </alphabet>
+	<states>
+        {states.map { state => <state>{state.toString}</state> }}
+	</states>
+	<initialState>{initialState}</initialState>
+	<delta>
+        {cartesianProduct(states,alphabet).map({
+                case (s,l) =>
+                    <transition from={s.toString} trigger={l.name} to={delta(s,l).toString} />
+        })}
+    </delta>
+	<accepting>
+		{accepting.map { state => <state>{state.toString}</state> }}
+	</accepting>
+</dfa>
+        }
+    }
+    
+    object DFA {
+        def Empty = {
+            val alphabet = Set('a) : Set[Letter]
+            val states = Set(q(0)) : Set[State]
+            def initial = q(0)     : State
+            val accepting = Set()  : Set[State]
+            def delta(s: State, l: Letter): State = q(0)
+            
+            (alphabet, states, initial, delta _, accepting): DFA
+        }
+        
+        def fromXml(node: Node): DFA = {
+            /*
+<dfa>
+    <alphabet>
+        <letter>a</letter>
+        <letter>b</letter>
+    </alphabet>
+    <states>
+        <state>1</state>
+        <state>3</state>
+        <state>5</state>
+        <state>6</state>
+        <state>4</state>
+        <state>2</state>
+    </states>
+    <initialState>1</initialState>
+    <delta>
+        <transition from="1" trigger="b" to="3"/>
+        <transition from="3" trigger="b" to="6"/>
+        <transition from="6" trigger="b" to="6"/>
+        <transition from="6" trigger="a" to="6"/>
+        <transition from="1" trigger="a" to="2"/>
+        <transition from="4" trigger="a" to="5"/>
+        <transition from="2" trigger="a" to="1"/>
+        <transition from="5" trigger="a" to="5"/>
+        <transition from="2" trigger="b" to="4"/>
+        <transition from="3" trigger="a" to="5"/>
+        <transition from="4" trigger="b" to="6"/>
+        <transition from="5" trigger="b" to="6"/>
+    </delta>
+    <accepting>
+        <state>3</state>
+        <state>4</state>
+        <state>5</state>
+    </accepting>
+</dfa>
+             */
+            val alphabet = (node \ "alphabet" \ "letter") map {
+                lNode => Symbol(lNode.text)
+            }: Seq[Letter]
+            
+            val states = (node \ "states" \ "state") map {
+                sNode => q(sNode.text.toInt)
+            }: Seq[State]
+            
+            val initialState = q((node \ "initialState").text.toInt): State
+            
+            def delta(state: State, letter: Letter): State = {
+                val transitions = (node \ "delta" \ "transition").foldLeft(Map[(State,Letter), State]())(
+                    (map: Map[(State,Letter), State], elem: scala.xml.Node) =>
+                            map + (
+                                    (q((elem \ "@from").text.toInt), Symbol((elem \ "@trigger").text)) ->
+                                        q((elem \ "@to").text.toInt))): Map[(State,Letter), State]
+                
+                transitions(state, letter)
+            }
+            
+            val accepting = (node \ "accepting" \ "state") map {
+                sNode => q(sNode.text.toInt)
+            }: Seq[State]
+            
+            new DFA(alphabet.toSet, states.toSet, initialState, delta _, accepting.toSet)
         }
     }
 }

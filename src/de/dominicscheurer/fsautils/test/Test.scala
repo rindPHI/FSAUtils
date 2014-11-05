@@ -23,6 +23,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import de.dominicscheurer.fsautils.FSA_DSL
 import de.dominicscheurer.fsautils.Types._
+import de.dominicscheurer.fsautils.DFA
 
 class Test extends FlatSpec with Matchers with FSA_DSL {
     
@@ -136,6 +137,11 @@ class Test extends FlatSpec with Matchers with FSA_DSL {
 
     it should "be stable under double negation" in
         assert(!(!dfa1) == dfa1)
+
+    it should "be stable under serialization" in {
+        assert(DFA.fromXml(dfa1.toXml) == dfa1)
+        assert(DFA.fromXml(dfa1eqNFA.toDFA.toXml) == dfa1eqNFA)
+    }
     
     // This may take a while:
     it should "be stable under Regular Expression building" in

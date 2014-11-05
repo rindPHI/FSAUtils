@@ -27,8 +27,12 @@
         <property
             name="scala-library.jar"
             value="${env.SCALA_HOME}/lib/scala-library.jar" />
+        <property
+            name="scala-xml.jar"
+            value="${env.SCALA_HOME}/lib/scala-xml_2.11-1.0.2.jar" />
         <path id="build.classpath">
             <pathelement location="${scala-library.jar}" />
+            <pathelement location="${scala-xml.jar}" />
             <pathelement location="${build.dir}" />
             <pathelement location="scalatest_2.11.jar"/>
         </path>
@@ -46,11 +50,11 @@
         <delete dir="${build-lib.dir}"/>
     </target>
 	
-	<target name="cleanScalatest">
+	<target name="cleanDownloads">
         <delete file="scalatest_2.11.jar"/>
 	</target>
 	
-    <target depends="clean, cleanScalatest" name="cleanall"/>
+    <target depends="clean, cleanDownloads" name="cleanall"/>
 	
     <target depends="init" name="build">
         <echo message="${ant.project.name}: ${ant.file}"/>
