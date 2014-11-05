@@ -307,6 +307,16 @@ package de.dominicscheurer.fsautils {
     }
     
     object DFA {
+        def Empty = {
+            val alphabet = Set('a) : Set[Letter]
+            val states = Set(q(0)) : Set[State]
+            def initial = q(0)     : State
+            val accepting = Set()  : Set[State]
+            def delta(s: State, l: Letter): State = q(0)
+            
+            (alphabet, states, initial, delta _, accepting): DFA
+        }
+        
         def fromXml(node: Node): DFA = {
             /*
 <dfa>
