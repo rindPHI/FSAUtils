@@ -20,7 +20,6 @@
 package de.dominicscheurer.fsautils {
     import Types._
     import Conversions._
-    import FSAMethods._
     import Helpers._
     import RegularExpressions._
     import Relations._

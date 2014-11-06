@@ -43,20 +43,5 @@ package de.dominicscheurer.fsautils {
 		}
 		
 		case class pair(s1: State, s2: State) extends State
-		
-		abstract class FSM {
-           def isDFA = this.isInstanceOf[DFA]
-           def isNFA = this.isInstanceOf[NFA]
-           def asDFA: Option[DFA] =
-               if (isDFA)
-                   Some(this.asInstanceOf[DFA])
-               else
-                   None
-           def asNFA: Option[NFA] =
-               if (isNFA)
-                   Some(this.asInstanceOf[NFA])
-               else
-                   None
-        }
 	}
 }

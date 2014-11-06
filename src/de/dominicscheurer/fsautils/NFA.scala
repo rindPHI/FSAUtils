@@ -20,7 +20,6 @@ package de.dominicscheurer.fsautils {
     import Types._
     import Conversions._
     import Helpers._
-    import FSAMethods._
     import RegularExpressions._
 
     class NFA(
