@@ -28,7 +28,7 @@ package de.dominicscheurer.fsautils {
         var states: Set[State],
         var initialState: State,
         var delta: ((State, Letter) => Set[State]), //Power Set instead of Relation
-        var accepting: Set[State]) {
+        var accepting: Set[State]) extends FSM {
 
         require(states contains initialState)
         require(accepting subsetOf states)

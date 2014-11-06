@@ -35,7 +35,7 @@ package de.dominicscheurer.fsautils {
         var states: Set[State],
         var initialState: State,
         var delta: ((State, Letter) => State),
-        var accepting: Set[State]) {
+        var accepting: Set[State]) extends FSM {
 
         require(states contains initialState)
         require(accepting subsetOf states)
@@ -303,6 +303,11 @@ package de.dominicscheurer.fsautils {
 		{accepting.map { state => <state>{state.toString}</state> }}
 	</accepting>
 </dfa>
+        }
+        
+        def toPrettyXml: String = {
+            val printer = new scala.xml.PrettyPrinter(80, 2)
+            printer.format(toXml)
         }
     }
     
