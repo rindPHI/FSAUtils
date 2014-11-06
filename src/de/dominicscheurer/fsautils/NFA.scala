@@ -252,7 +252,34 @@ package de.dominicscheurer.fsautils {
             }
         }
         
-        override def toPrettyXml: String = "NOT YET IMPLEMENTED" //TODO
+        override def toXml: scala.xml.Elem = {
+            val renamed = getRenamedCopy(0)
+            val alphabet = renamed.alphabet
+            val states = renamed.states
+            val initialState = renamed.initialState
+            val delta = renamed.delta
+            val accepting = renamed.accepting
+<nfa>
+    <alphabet>
+        {alphabet.map { letter => <letter>{letter.toString.replaceFirst("'", "")}</letter> }}
+    </alphabet>
+    <states>
+        {states.map { state => <state>{state.toString}</state> }}
+    </states>
+    <initialState>{initialState}</initialState>
+    <delta>
+        {cartesianProduct(states,alphabet).map({
+                case (s,l) =>
+                    delta(s,l).map {
+                        to => <transition from={s.toString} trigger={l.name} to={to.toString} />
+                    }
+        })}
+    </delta>
+    <accepting>
+        {accepting.map { state => <state>{state.toString}</state> }}
+    </accepting>
+</nfa>
+        }
         
         override def toString = {
             val indentSpace = "    "
@@ -291,6 +318,67 @@ package de.dominicscheurer.fsautils {
 
             sb toString
         }
-
+    }
+    
+    object NFA {
+        def fromXml(node: scala.xml.Node): NFA = {
+            /*
+<nfa>
+  <alphabet>
+    <letter>a</letter>
+    <letter>b</letter>
+  </alphabet>
+  <states>
+    <state>0</state>
+    <state>1</state>
+  </states>
+  <initialState>0</initialState>
+  <delta>
+    <transition from="0" trigger="a" to="0"/>
+    <transition from="0" trigger="b" to="1"/>
+    <transition from="1" trigger="a" to="1"/>
+  </delta>
+  <accepting>
+    <state>1</state>
+  </accepting>
+</nfa>
+             */
+            val alphabet = (node \ "alphabet" \ "letter") map {
+                lNode => Symbol(lNode.text)
+            }: Seq[Letter]
+            
+            val states = (node \ "states" \ "state") map {
+                sNode => q(sNode.text.toInt)
+            }: Seq[State]
+            
+            val initialState = q((node \ "initialState").text.toInt): State
+            
+            def delta(state: State, letter: Letter): Set[State] = {
+                val transitions = (node \ "delta" \ "transition").foldLeft(Map[(State,Letter), Set[State]]())(
+                    (map: Map[(State,Letter), Set[State]], elem: scala.xml.Node) => {
+                        val from = q((elem \ "@from").text.toInt): State
+                        val trigger = Symbol((elem \ "@trigger").text): Letter
+                        val to = q((elem \ "@to").text.toInt): State
+                        
+                        if (map contains (from,trigger)) {
+                            val oldRes = map(from, trigger)
+                            (map - ((from,trigger))) + ((from, trigger) -> (oldRes + to))
+                        } else {
+                            map + ((from, trigger) -> Set(to)): Map[(State,Letter), Set[State]]
+                        }
+                    })
+                
+                if (transitions contains(state, letter))
+                    transitions(state, letter)
+                else
+                    Set()
+            }
+            
+            val accepting = (node \ "accepting" \ "state") map {
+                sNode => q(sNode.text.toInt)
+            }: Seq[State]
+            
+            new NFA(alphabet.toSet, states.toSet, initialState, delta _, accepting.toSet)
+        }
     }
 }

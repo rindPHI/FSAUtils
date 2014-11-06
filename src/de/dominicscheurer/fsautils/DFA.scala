@@ -277,7 +277,7 @@ package de.dominicscheurer.fsautils {
             sb toString
         }
         
-        def toXml = {
+        override def toXml: scala.xml.Elem = {
             val renamed = getRenamedCopy(0)
             val alphabet = renamed.alphabet
             val states = renamed.states
@@ -302,11 +302,6 @@ package de.dominicscheurer.fsautils {
 		{accepting.map { state => <state>{state.toString}</state> }}
 	</accepting>
 </dfa>
-        }
-        
-        override def toPrettyXml: String = {
-            val printer = new scala.xml.PrettyPrinter(80, 2)
-            printer.format(toXml)
         }
     }
     

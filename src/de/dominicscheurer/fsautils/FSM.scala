@@ -35,7 +35,12 @@ package de.dominicscheurer.fsautils {
            else
                None
        
-       def toPrettyXml: String
+       def toXml: scala.xml.Elem
+               
+       def toPrettyXml: String = {
+            val printer = new scala.xml.PrettyPrinter(80, 2)
+            printer.format(toXml)
+        }
                
        def toStringUpToDelta(
             indentBeginner: String,
