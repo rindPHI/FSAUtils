@@ -252,6 +252,8 @@ package de.dominicscheurer.fsautils {
             }
         }
         
+        override def toPrettyXml: String = "NOT YET IMPLEMENTED" //TODO
+        
         override def toString = {
             val indentSpace = "    "
             val indentBeginner = "|"

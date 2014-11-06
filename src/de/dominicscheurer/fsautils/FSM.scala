@@ -34,6 +34,8 @@ package de.dominicscheurer.fsautils {
                Some(this.asInstanceOf[NFA])
            else
                None
+       
+       def toPrettyXml: String
                
        def toStringUpToDelta(
             indentBeginner: String,

@@ -304,7 +304,7 @@ package de.dominicscheurer.fsautils {
 </dfa>
         }
         
-        def toPrettyXml: String = {
+        override def toPrettyXml: String = {
             val printer = new scala.xml.PrettyPrinter(80, 2)
             printer.format(toXml)
         }
