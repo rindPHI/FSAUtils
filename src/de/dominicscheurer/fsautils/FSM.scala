@@ -93,7 +93,7 @@ package de.dominicscheurer.fsautils {
 
         def ++(other: DFA): FSM        
         def ++(other: NFA): FSM
-        def ++(other: FSM): Boolean =
+        def ++(other: FSM): FSM =
             if (other isDFA)
                 this ++ other.asDFA.get
             else
@@ -101,7 +101,7 @@ package de.dominicscheurer.fsautils {
 
         def &(other: DFA): FSM
         def &(other: NFA): FSM
-        def &(other: FSM): Boolean =
+        def &(other: FSM): FSM =
             if (other isDFA)
                 this & other.asDFA.get
             else
@@ -109,7 +109,7 @@ package de.dominicscheurer.fsautils {
 
         def |(other: DFA): FSM
         def |(other: NFA): FSM
-        def |(other: FSM): Boolean =
+        def |(other: FSM): FSM =
             if (other isDFA)
                 this | other.asDFA.get
             else
@@ -117,7 +117,7 @@ package de.dominicscheurer.fsautils {
 
         def \(other: DFA): FSM
         def \(other: NFA): FSM
-        def \(other: FSM): Boolean =
+        def \(other: FSM): FSM =
             if (other isDFA)
                 this \ other.asDFA.get
             else
