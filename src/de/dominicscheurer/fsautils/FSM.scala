@@ -93,18 +93,43 @@ package de.dominicscheurer.fsautils {
 
         def ++(other: DFA): FSM        
         def ++(other: NFA): FSM
+        def ++(other: FSM): Boolean =
+            if (other isDFA)
+                this ++ other.asDFA.get
+            else
+                this ++ other.asNFA.get
 
         def &(other: DFA): FSM
         def &(other: NFA): FSM
+        def &(other: FSM): Boolean =
+            if (other isDFA)
+                this & other.asDFA.get
+            else
+                this & other.asNFA.get
 
         def |(other: DFA): FSM
         def |(other: NFA): FSM
+        def |(other: FSM): Boolean =
+            if (other isDFA)
+                this | other.asDFA.get
+            else
+                this | other.asNFA.get
 
         def \(other: DFA): FSM
         def \(other: NFA): FSM
+        def \(other: FSM): Boolean =
+            if (other isDFA)
+                this \ other.asDFA.get
+            else
+                this \ other.asNFA.get
 
         def ==(other: DFA): Boolean
         def ==(other: NFA): Boolean
+        def ==(other: FSM): Boolean =
+            if (other isDFA)
+                this == other.asDFA.get
+            else
+                this == other.asNFA.get
 
         def isEmpty: Boolean
 
