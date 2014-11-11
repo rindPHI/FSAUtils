@@ -91,15 +91,20 @@ package de.dominicscheurer.fsautils {
 
         def * : FSM
 
-        def ++(other: FSM): FSM
+        def ++(other: DFA): FSM        
+        def ++(other: NFA): FSM
 
-        def &(other: FSM): FSM
+        def &(other: DFA): FSM
+        def &(other: NFA): FSM
 
-        def |(other: FSM): FSM
+        def |(other: DFA): FSM
+        def |(other: NFA): FSM
 
-        def \(other: FSM): FSM
+        def \(other: DFA): FSM
+        def \(other: NFA): FSM
 
-        def ==(other: FSM): Boolean
+        def ==(other: DFA): Boolean
+        def ==(other: NFA): Boolean
 
         def isEmpty: Boolean
 
