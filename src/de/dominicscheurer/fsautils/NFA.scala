@@ -95,6 +95,10 @@ package de.dominicscheurer.fsautils {
             thisR concat other
         }
 
+        def ++(otherOrig: DFA): NFA = {
+            this ++ (otherOrig: NFA)
+        }
+
         private def productAutomaton(other: NFA): NFA = {
             require(alphabet equals other.alphabet)
             
@@ -117,6 +121,12 @@ package de.dominicscheurer.fsautils {
             val product = productAutomaton(other)
 
             (alphabet, product.states, product.initialState, product.delta, intersAccepting)
+        }
+
+        def &(other: DFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            this & (other: NFA)
         }
 
         def |(other: NFA): NFA = {
@@ -142,14 +152,23 @@ package de.dominicscheurer.fsautils {
             }
         }
 
+        def |(other: DFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            this & (other: NFA)
+        }
+
         def \(other: NFA): DFA =
             (this toDFA) \ (other toDFA)
+
+        def \(other: DFA): DFA =
+            (this toDFA) \ other
 
         def ==(other: NFA): Boolean =
             (this toDFA) == (other toDFA)
 
         def ==(other: DFA): Boolean =
-            (this toDFA) == (other toDFA)
+            (this toDFA) == other
 
         def isEmpty: Boolean = (this toDFA) isEmpty
 

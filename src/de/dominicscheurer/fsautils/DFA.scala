@@ -84,6 +84,12 @@ package de.dominicscheurer.fsautils {
 
             (alphabet, product.states, product.initialState, product.delta, intersAccepting)
         }
+        
+        def &(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            (this: NFA) & other
+        }
 
         def |(other: DFA): DFA = {
             require(alphabet equals other.alphabet)
@@ -94,11 +100,23 @@ package de.dominicscheurer.fsautils {
 
             (alphabet, product.states, product.initialState, product.delta, unionAccepting)
         }
+        
+        def |(other: NFA): NFA = {
+            require(alphabet equals other.alphabet)
+            
+            (this: NFA) | other
+        }
 
         def \(other: DFA): DFA = {
             require(alphabet equals other.alphabet)
             
             this & (!other)
+        }
+
+        def \(other: NFA): DFA = {
+            require(alphabet equals other.alphabet)
+            
+            this & (!(other toDFA))
         }
 
         def ==(other: DFA): Boolean =

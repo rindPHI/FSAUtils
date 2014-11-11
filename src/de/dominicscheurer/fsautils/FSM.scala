@@ -20,6 +20,7 @@ package de.dominicscheurer.fsautils {
     
     import Types._
     import Conversions._
+    import RegularExpressions._
 	
     abstract class FSM {
        def isDFA = this.isInstanceOf[DFA]
@@ -77,5 +78,61 @@ package de.dominicscheurer.fsautils {
               
             sb.toString
         }
+       
+        def accepts(word: String): Boolean
+
+        def accepts(word: Word): Boolean
+
+        def accepts(word: Word, fromState: State): Boolean
+        
+        def extendAlphabet(newLetters: Set[Letter]): FSM
+
+        def unary_! : FSM
+
+        def * : FSM
+
+        def ++(other: DFA): FSM        
+        def ++(other: NFA): FSM
+        def ++(other: FSM): Boolean =
+            if (other isDFA)
+                this ++ other.asDFA.get
+            else
+                this ++ other.asNFA.get
+
+        def &(other: DFA): FSM
+        def &(other: NFA): FSM
+        def &(other: FSM): Boolean =
+            if (other isDFA)
+                this & other.asDFA.get
+            else
+                this & other.asNFA.get
+
+        def |(other: DFA): FSM
+        def |(other: NFA): FSM
+        def |(other: FSM): Boolean =
+            if (other isDFA)
+                this | other.asDFA.get
+            else
+                this | other.asNFA.get
+
+        def \(other: DFA): FSM
+        def \(other: NFA): FSM
+        def \(other: FSM): Boolean =
+            if (other isDFA)
+                this \ other.asDFA.get
+            else
+                this \ other.asNFA.get
+
+        def ==(other: DFA): Boolean
+        def ==(other: NFA): Boolean
+        def ==(other: FSM): Boolean =
+            if (other isDFA)
+                this == other.asDFA.get
+            else
+                this == other.asNFA.get
+
+        def isEmpty: Boolean
+
+        def toRegExp: RE
     }
 }
