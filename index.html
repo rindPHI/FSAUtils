@@ -32,7 +32,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="fsautils" class="anchor" href="#fsautils"><span class="octicon octicon-link"></span></a>FSAUtils</h1>
+<a id="fsautils" class="anchor" href="#fsautils" aria-hidden="true"><span class="octicon octicon-link"></span></a>FSAUtils</h1>
 
 <p>Models of finite automata (DFA, NFA) with support of common operations and easily readable creation of objects.</p>
 
@@ -52,7 +52,7 @@
 </ul>
 
 <h2>
-<a name="features-supported-so-far" class="anchor" href="#features-supported-so-far"><span class="octicon octicon-link"></span></a>Features supported so far</h2>
+<a id="features-supported-so-far" class="anchor" href="#features-supported-so-far" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features supported so far</h2>
 
 <ul>
 <li>Creation of Deterministic Finite Automata (DFA)</li>
@@ -67,13 +67,14 @@
 <li>Determination of the language (RE) of a DFA/NFA</li>
 <li>Conversion of RE to NFA (i.e. also checking of equivalence of DFA/NFA with RE)</li>
 <li>Minimization of DFA</li>
+<li>(De-)Serialization to and from XML</li>
 </ul>
 
 <h2>
-<a name="get-started-10-beta-version" class="anchor" href="#get-started-10-beta-version"><span class="octicon octicon-link"></span></a>Get Started (1.0 Beta Version)</h2>
+<a id="get-started-11-beta-version" class="anchor" href="#get-started-11-beta-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get Started (1.1 Beta Version)</h2>
 
 <p><strong>Prerequisites:</strong> You need to have Scala and the JVM installed. FSAUtils
-has been tested with Scala 2.11 and Java 1.7. Furthermore, the environment
+has been tested with Scala 2.11.2 and Java 1.7. Furthermore, the environment
 variable <code>$SCALA_HOME</code> has to be correctly set to the path where Scala resides.</p>
 
 <p>The following steps should work for a Linux system.</p>
@@ -82,21 +83,18 @@ variable <code>$SCALA_HOME</code> has to be correctly set to the path where Scal
 <li>
 <p>Download the archive:</p>
 
-<div class="highlight highlight-bash"><pre>wget https://github.com/rindPHI/FSAUtils/archive/v1.0-beta.tar.gz -O FSAUtils-1.0-beta.tar.gz
-</pre></div>
+<div class="highlight highlight-bash"><pre>wget https://github.com/rindPHI/FSAUtils/archive/v1.1-beta.tar.gz -O FSAUtils-1.1-beta.tar.gz</pre></div>
 </li>
 <li>
 <p>Extract it:</p>
 
-<div class="highlight highlight-bash"><pre>tar xzf FSAUtils-1.0-beta.tar.gz
-</pre></div>
+<div class="highlight highlight-bash"><pre>tar xzf FSAUtils-1.1-beta.tar.gz</pre></div>
 </li>
 <li>
 <p>Build it:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nb">cd </span>FSAUtils-1.0-beta/
-ant
-</pre></div>
+<div class="highlight highlight-bash"><pre><span class="pl-sf">cd</span> FSAUtils-1.1-beta/
+ant</pre></div>
 
 <p>As the result, you find a file "FSAUtils.jar" in the directory <code>lib/</code>
 which you need to add to the classpath of scalac and scala in order
@@ -105,135 +103,123 @@ to compile / run your objects that make use of FSAUtils.</p>
 <li>
 <p>In your Scala files, add the import</p>
 
-<div class="highlight highlight-scala"><pre><span class="k">import</span> <span class="nn">de.dominicscheurer.fsautils._</span>
-</pre></div>
+<div class="highlight highlight-scala"><pre><span class="pl-k">import</span> <span class="pl-v">de.dominicscheurer.fsautils.</span><span class="pl-v">_</span></pre></div>
 
 <p>and, if you want to use the FSA domain specific language
 for better readability, let your object extend <code>FSA_DSL</code>:</p>
 
-<div class="highlight highlight-scala"><pre><span class="k">object</span> <span class="nc">MyObject</span> <span class="k">extends</span> <span class="nc">FSA_DSL</span> <span class="o">{</span>
-</pre></div>
+<div class="highlight highlight-scala"><pre><span class="pl-k">object</span> <span class="pl-enc">MyObject</span> <span class="pl-k">extends</span> <span class="pl-eoi">FSA_DSL</span> {</pre></div>
 </li>
 <li>
 <p>Compile your scala object:</p>
 
-<div class="highlight highlight-bash"><pre>scalac -classpath <span class="s2">"/path/to/FSAUtils.jar"</span> YourObject.scala
-</pre></div>
+<div class="highlight highlight-bash"><pre>scalac -classpath <span class="pl-s1"><span class="pl-pds">"</span>/path/to/FSAUtils.jar<span class="pl-pds">"</span></span> YourObject.scala</pre></div>
 </li>
 <li>
 <p>...and run it:</p>
 
-<div class="highlight highlight-bash"><pre>scala -classpath <span class="s2">".:/path/to/FSAUtils.jar"</span> YourObject
-</pre></div>
+<div class="highlight highlight-bash"><pre>scala -classpath <span class="pl-s1"><span class="pl-pds">"</span>.:/path/to/FSAUtils.jar<span class="pl-pds">"</span></span> YourObject</pre></div>
 </li>
 </ol>
 
 <p>An example file like mentioned in points 3. to 5. could have, for instance,
 the following content:</p>
 
-<div class="highlight highlight-scala"><pre><span class="k">import</span> <span class="nn">de.dominicscheurer.fsautils._</span>
+<div class="highlight highlight-scala"><pre><span class="pl-k">import</span> <span class="pl-v">de.dominicscheurer.fsautils.</span><span class="pl-v">_</span>
 
-<span class="k">object</span> <span class="nc">FSAUtilsTest</span> <span class="k">extends</span> <span class="nc">FSA_DSL</span> <span class="o">{</span>
+<span class="pl-k">object</span> <span class="pl-enc">FSAUtilsTest</span> <span class="pl-k">extends</span> <span class="pl-eoi">FSA_DSL</span> {
 
-    <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">myDFA</span> <span class="k">=</span>
-            <span class="n">dfa</span> <span class="o">(</span><span class="-Symbol">'Z</span><span class="o">,</span> <span class="-Symbol">'S</span><span class="o">,</span> <span class="-Symbol">'q0</span><span class="o">,</span> <span class="-Symbol">'d</span><span class="o">,</span> <span class="-Symbol">'A</span><span class="o">)</span> <span class="n">where</span>
-                <span class="-Symbol">'Z</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="-Symbol">'a</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span>   <span class="n">and</span>
-                <span class="-Symbol">'S</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>     <span class="n">and</span>
-                <span class="-Symbol">'q0</span> <span class="o">==&gt;</span> <span class="mi">0</span>             <span class="n">and</span>
-                <span class="-Symbol">'A</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>        <span class="n">and</span>
-                <span class="-Symbol">'d</span>  <span class="o">==&gt;</span> <span class="nc">Delta</span><span class="o">(</span>
-                      <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="-Symbol">'a</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">,</span>
-                      <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="o">,</span>
-                      <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="-Symbol">'a</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">,</span>
-                      <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-                <span class="o">)|</span>
+    <span class="pl-k">def</span> <span class="pl-enf">main</span>(<span class="pl-v">args</span>: <span class="pl-enc">Array</span>[<span class="pl-s">String</span>]) {
+      <span class="pl-k">val</span> myDFA <span class="pl-ko">=</span>
+            dfa ('Z, 'S, 'q0, 'd, 'A) where
+                'Z  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>('a, 'b)   and
+                'S  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>, <span class="pl-cn">1</span>)     and
+                'q0 <span class="pl-ko">==&gt;</span> <span class="pl-cn">0</span>             and
+                'A  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>)        and
+                'd  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Delta</span>(
+                      (<span class="pl-cn">0</span>, 'a) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">0</span>,
+                      (<span class="pl-cn">0</span>, 'b) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">1</span>,
+                      (<span class="pl-cn">1</span>, 'a) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">0</span>,
+                      (<span class="pl-cn">1</span>, 'b) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">1</span>
+                )<span class="pl-ko">|</span>
 
-        <span class="n">print</span><span class="o">(</span><span class="s">"DFA accepts aaab: "</span><span class="o">)</span>
-        <span class="n">println</span><span class="o">(</span><span class="n">myDFA</span> <span class="n">accepts</span> <span class="s">"aaab"</span><span class="o">)</span>
-        <span class="n">print</span><span class="o">(</span><span class="s">"DFA accepts aaaba: "</span><span class="o">)</span>
-        <span class="n">println</span><span class="o">(</span><span class="n">myDFA</span> <span class="n">accepts</span> <span class="s">"aaaba"</span><span class="o">)</span>
-    <span class="o">}</span>
+        print(<span class="pl-s1"><span class="pl-pds">"</span>DFA accepts aaab: <span class="pl-pds">"</span></span>)
+        println(myDFA accepts <span class="pl-s1"><span class="pl-pds">"</span>aaab<span class="pl-pds">"</span></span>)
+        print(<span class="pl-s1"><span class="pl-pds">"</span>DFA accepts aaaba: <span class="pl-pds">"</span></span>)
+        println(myDFA accepts <span class="pl-s1"><span class="pl-pds">"</span>aaaba<span class="pl-pds">"</span></span>)
+    }
 
-<span class="o">}</span>
-</pre></div>
+}</pre></div>
 
 <p>If you wish to run the included unit tests, execute</p>
 
-<div class="highlight highlight-bash"><pre>ant runTests
-</pre></div>
+<div class="highlight highlight-bash"><pre>ant runTests</pre></div>
 
-<p>in the <code>FSAUtils-1.0-beta</code> directory.</p>
+<p>in the <code>FSAUtils-1.1-beta</code> directory.</p>
 
 <h2>
-<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
 
 <p>Please consider the file Test.scala to see some working applied examples.</p>
 
 <h3>
-<a name="creation-of-a-dfa" class="anchor" href="#creation-of-a-dfa"><span class="octicon octicon-link"></span></a>Creation of a DFA</h3>
+<a id="creation-of-a-dfa" class="anchor" href="#creation-of-a-dfa" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creation of a DFA</h3>
 
-<div class="highlight highlight-scala"><pre><span class="k">val</span> <span class="n">myDFA</span> <span class="k">=</span>
-    <span class="n">dfa</span> <span class="o">(</span><span class="-Symbol">'Z</span><span class="o">,</span> <span class="-Symbol">'S</span><span class="o">,</span> <span class="-Symbol">'q0</span><span class="o">,</span> <span class="-Symbol">'d</span><span class="o">,</span> <span class="-Symbol">'A</span><span class="o">)</span> <span class="n">where</span>
-        <span class="-Symbol">'Z</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="-Symbol">'a</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span>   <span class="n">and</span>
-        <span class="-Symbol">'S</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>     <span class="n">and</span>
-        <span class="-Symbol">'q0</span> <span class="o">==&gt;</span> <span class="mi">0</span>             <span class="n">and</span>
-        <span class="-Symbol">'A</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>        <span class="n">and</span>
-        <span class="-Symbol">'d</span>  <span class="o">==&gt;</span> <span class="nc">Delta</span><span class="o">(</span>
-              <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="-Symbol">'a</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">,</span>
-              <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="o">,</span>
-              <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="-Symbol">'a</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">,</span>
-              <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-        <span class="o">)|</span>
+<div class="highlight highlight-scala"><pre><span class="pl-k">val</span> myDFA <span class="pl-ko">=</span>
+    dfa ('Z, 'S, 'q0, 'd, 'A) where
+        'Z  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>('a, 'b)   and
+        'S  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>, <span class="pl-cn">1</span>)     and
+        'q0 <span class="pl-ko">==&gt;</span> <span class="pl-cn">0</span>             and
+        'A  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>)        and
+        'd  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Delta</span>(
+              (<span class="pl-cn">0</span>, 'a) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">0</span>,
+              (<span class="pl-cn">0</span>, 'b) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">1</span>,
+              (<span class="pl-cn">1</span>, 'a) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">0</span>,
+              (<span class="pl-cn">1</span>, 'b) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-cn">1</span>
+        )<span class="pl-ko">|</span>
 
-<span class="n">print</span><span class="o">(</span><span class="s">"DFA accepts aaab: "</span><span class="o">)</span>
-<span class="n">println</span><span class="o">(</span><span class="n">myDFA</span> <span class="n">accepts</span> <span class="s">"aaab"</span><span class="o">)</span>
-</pre></div>
-
-<h3>
-<a name="creation-of-an-nfa" class="anchor" href="#creation-of-an-nfa"><span class="octicon octicon-link"></span></a>Creation of an NFA</h3>
-
-<div class="highlight highlight-scala"><pre><span class="k">val</span> <span class="n">myNFA</span> <span class="k">=</span>
-    <span class="n">nfa</span> <span class="o">(</span><span class="-Symbol">'Z</span><span class="o">,</span> <span class="-Symbol">'S</span><span class="o">,</span> <span class="-Symbol">'q0</span><span class="o">,</span> <span class="-Symbol">'d</span><span class="o">,</span> <span class="-Symbol">'A</span><span class="o">)</span> <span class="n">where</span>
-        <span class="-Symbol">'Z</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="-Symbol">'a</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span>   <span class="n">and</span>
-        <span class="-Symbol">'S</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>     <span class="n">and</span>
-        <span class="-Symbol">'q0</span> <span class="o">==&gt;</span> <span class="mi">0</span>             <span class="n">and</span>
-        <span class="-Symbol">'A</span>  <span class="o">==&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>        <span class="n">and</span>
-        <span class="-Symbol">'d</span>  <span class="o">==&gt;</span> <span class="nc">Delta</span><span class="o">(</span>
-              <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="-Symbol">'a</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span>
-              <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="-Symbol">'b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nc">Set</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
-        <span class="o">)||</span>
-
-<span class="n">print</span><span class="o">(</span><span class="s">"NFA accepts aaab: "</span><span class="o">)</span>
-<span class="n">println</span><span class="o">(</span><span class="n">myNFA</span> <span class="n">accepts</span> <span class="s">"aaab"</span><span class="o">)</span>
-</pre></div>
+print(<span class="pl-s1"><span class="pl-pds">"</span>DFA accepts aaab: <span class="pl-pds">"</span></span>)
+println(myDFA accepts <span class="pl-s1"><span class="pl-pds">"</span>aaab<span class="pl-pds">"</span></span>)</pre></div>
 
 <h3>
-<a name="star-operation-for-nfa" class="anchor" href="#star-operation-for-nfa"><span class="octicon octicon-link"></span></a>Star Operation for NFA</h3>
+<a id="creation-of-an-nfa" class="anchor" href="#creation-of-an-nfa" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creation of an NFA</h3>
 
-<div class="highlight highlight-scala"><pre><span class="n">println</span><span class="o">((</span><span class="n">myNFA</span><span class="o">*)</span> <span class="n">accepts</span> <span class="s">"aaabaaab"</span><span class="o">)</span>
-</pre></div>
+<div class="highlight highlight-scala"><pre><span class="pl-k">val</span> myNFA <span class="pl-ko">=</span>
+    nfa ('Z, 'S, 'q0, 'd, 'A) where
+        'Z  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>('a, 'b)   and
+        'S  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>, <span class="pl-cn">1</span>)     and
+        'q0 <span class="pl-ko">==&gt;</span> <span class="pl-cn">0</span>             and
+        'A  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">1</span>)        and
+        'd  <span class="pl-ko">==&gt;</span> <span class="pl-enc">Delta</span>(
+              (<span class="pl-cn">0</span>, 'a) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>, <span class="pl-cn">1</span>),
+              (<span class="pl-cn">0</span>, 'b) <span class="pl-ko">-</span><span class="pl-ko">&gt;</span> <span class="pl-enc">Set</span>(<span class="pl-cn">0</span>)
+        )<span class="pl-ko">||</span>
 
-<h3>
-<a name="determinization-for-nfa" class="anchor" href="#determinization-for-nfa"><span class="octicon octicon-link"></span></a>Determinization for NFA</h3>
-
-<div class="highlight highlight-scala"><pre><span class="n">println</span><span class="o">((</span><span class="n">myNFA</span> <span class="n">toDFA</span><span class="o">)</span> <span class="n">accepts</span> <span class="s">"aaab"</span><span class="o">)</span>
-</pre></div>
-
-<h3>
-<a name="complement-for-dfa" class="anchor" href="#complement-for-dfa"><span class="octicon octicon-link"></span></a>Complement for DFA</h3>
-
-<div class="highlight highlight-scala"><pre><span class="n">println</span><span class="o">((!</span><span class="n">myDFA</span><span class="o">)</span> <span class="n">accepts</span> <span class="s">"aaab"</span><span class="o">)</span>
-</pre></div>
-
-<h3>
-<a name="concatenation" class="anchor" href="#concatenation"><span class="octicon octicon-link"></span></a>Concatenation</h3>
-
-<div class="highlight highlight-scala"><pre><span class="n">println</span><span class="o">(</span><span class="n">myNFA</span> <span class="o">++</span> <span class="n">myNFA2</span><span class="o">);</span>
-</pre></div>
+print(<span class="pl-s1"><span class="pl-pds">"</span>NFA accepts aaab: <span class="pl-pds">"</span></span>)
+println(myNFA accepts <span class="pl-s1"><span class="pl-pds">"</span>aaab<span class="pl-pds">"</span></span>)</pre></div>
 
 <h3>
-<a name="pretty-printing" class="anchor" href="#pretty-printing"><span class="octicon octicon-link"></span></a>Pretty Printing</h3>
+<a id="star-operation-for-nfa" class="anchor" href="#star-operation-for-nfa" aria-hidden="true"><span class="octicon octicon-link"></span></a>Star Operation for NFA</h3>
+
+<div class="highlight highlight-scala"><pre>println((myNFA<span class="pl-ko">*</span>) accepts <span class="pl-s1"><span class="pl-pds">"</span>aaabaaab<span class="pl-pds">"</span></span>)</pre></div>
+
+<h3>
+<a id="determinization-for-nfa" class="anchor" href="#determinization-for-nfa" aria-hidden="true"><span class="octicon octicon-link"></span></a>Determinization for NFA</h3>
+
+<div class="highlight highlight-scala"><pre>println((myNFA toDFA) accepts <span class="pl-s1"><span class="pl-pds">"</span>aaab<span class="pl-pds">"</span></span>)</pre></div>
+
+<h3>
+<a id="complement-for-dfa" class="anchor" href="#complement-for-dfa" aria-hidden="true"><span class="octicon octicon-link"></span></a>Complement for DFA</h3>
+
+<div class="highlight highlight-scala"><pre>println((<span class="pl-ko">!</span>myDFA) accepts <span class="pl-s1"><span class="pl-pds">"</span>aaab<span class="pl-pds">"</span></span>)</pre></div>
+
+<h3>
+<a id="concatenation" class="anchor" href="#concatenation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Concatenation</h3>
+
+<div class="highlight highlight-scala"><pre>println(myNFA <span class="pl-ko">++</span> myNFA2);</pre></div>
+
+<h3>
+<a id="pretty-printing" class="anchor" href="#pretty-printing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pretty Printing</h3>
 
 <p><code>println(myNFA toDFA)</code> yields:</p>
 
@@ -255,13 +241,12 @@ the following content:</p>
 </code></pre>
 
 <h3>
-<a name="creation-of-re" class="anchor" href="#creation-of-re"><span class="octicon octicon-link"></span></a>Creation of RE</h3>
+<a id="creation-of-re" class="anchor" href="#creation-of-re" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creation of RE</h3>
 
-<div class="highlight highlight-scala"><pre><span class="k">def</span> <span class="n">myRegExp</span> <span class="k">=</span> <span class="o">((</span><span class="-Symbol">'a</span><span class="o">*)</span> <span class="o">+</span> <span class="o">(</span><span class="-Symbol">'b</span> <span class="o">&amp;</span> <span class="o">(</span><span class="-Symbol">'b</span><span class="o">*)</span> <span class="o">&amp;</span> <span class="-Symbol">'a</span><span class="o">))*</span> <span class="k">:</span> <span class="kt">RE</span>
-</pre></div>
+<div class="highlight highlight-scala"><pre><span class="pl-k">def</span> <span class="pl-enf">myRegExp</span> <span class="pl-ko">=</span> (('a<span class="pl-ko">*</span>) <span class="pl-ko">+</span> ('b &amp; ('b<span class="pl-ko">*</span>) &amp; 'a))<span class="pl-ko">*</span> <span class="pl-ko">:</span> <span class="pl-enc">RE</span></pre></div>
 
 <h2>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>Copyright 2014 Dominic Scheurer</p>
 
