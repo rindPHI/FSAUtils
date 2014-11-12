@@ -43,6 +43,7 @@ package de.dominicscheurer.fsautils {
         def accepts(word: Word, fromState: State): Boolean = word match {
             case Nil => accepting contains fromState
             case letter :: rest =>
+                (alphabet contains letter) &&
                 delta(fromState, letter).foldLeft(false)(
                     (result: Boolean, possibleSuccessor: State) =>
                         result || accepts(rest, possibleSuccessor))
