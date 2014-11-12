@@ -8,14 +8,6 @@
 	<property name="build.dir" value="build"/>
     <property name="build-lib.dir" value="lib"/>
 	
-    <path id="scala.libraries">
-        <pathelement location="${env.SCALA_HOME}/lib/scala-library.jar"/>
-        <pathelement location="${env.SCALA_HOME}/lib/scala-reflect.jar"/>
-        <pathelement location="${env.SCALA_HOME}/lib/scala-actors_*.jar"/>
-        <pathelement location="${env.SCALA_HOME}/lib/scala-swing_*.jar"/>
-        <pathelement location="scalatest_2.11.jar"/>
-    </path>
-	
 	<target name="dl_scalatest">
         <get src="https://oss.sonatype.org/content/groups/public/org/scalatest/scalatest_2.11/2.2.1/scalatest_2.11-2.2.1.jar" 
              dest="scalatest_2.11.jar" skipexisting="true"/>
@@ -24,12 +16,18 @@
     <target depends="dl_scalatest" name="init">
     	<mkdir dir="${build.dir}"/>
         <mkdir dir="${build-lib.dir}"/>
+
+        <path id="scala-xml-file"> 
+            <fileset dir="${env.SCALA_HOME}/lib/"> 
+                <include name="scala-xml*.jar"/> 
+             </fileset>
+        </path>
+        
         <property
             name="scala-library.jar"
             value="${env.SCALA_HOME}/lib/scala-library.jar" />
-        <property
-            name="scala-xml.jar"
-            value="${env.SCALA_HOME}/lib/scala-xml_2.11-1.0.2.jar" />
+        <property name="scala-xml.jar" refid="scala-xml-file" />
+    	
         <path id="build.classpath">
             <pathelement location="${scala-library.jar}" />
             <pathelement location="${scala-xml.jar}" />
