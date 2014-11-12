@@ -46,7 +46,9 @@ package de.dominicscheurer.fsautils {
 
         def accepts(word: Word, fromState: State): Boolean = word match {
             case Nil => accepting contains fromState
-            case letter :: rest => accepts(rest, delta(fromState, letter))
+            case letter :: rest =>
+                (alphabet contains letter) &&
+                accepts(rest, delta(fromState, letter))
         }
         
         def extendAlphabet(newLetters: Set[Letter]): NFA = {
