@@ -41,7 +41,7 @@ The following steps should work for a Linux system.
 1. Download the archive:
    
    ```bash
-   wget https://github.com/rindPHI/FSAUtils/releases/download/v1.1-beta/FSAUtils.jar -O FSAUtils-1.1-beta.tar.gz
+   wget https://github.com/rindPHI/FSAUtils/archive/v1.1-beta.tar.gz -O FSAUtils-1.1-beta.tar.gz
    ```
    
 2. Extract it:
